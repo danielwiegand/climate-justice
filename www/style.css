@@ -1,0 +1,34 @@
+.girafe_container_std svg {
+	max-height: none!important; // Needed to make girafe outputs fill the screen
+}
+
+.btn-default {
+	background-image:none;
+}
+
+/* Button to go to next / previous page */
+.scroll-button {
+	font-size:190px; 
+	width:0px;
+	height:0px;
+	padding:0px;
+}
+
+.scroll-button i {
+	opacity:.2;
+}
+
+/* Some free space below the title */
+.container-fluid h2 {
+	margin-bottom:40px;
+}
+
+/* Some free space below the navigation bar */
+#tabset-panel {
+	margin-bottom:30px;
+}
+
+/* Adjust height of leaflet plots */
+.leaflet {
+	height:70vh!important;
+}

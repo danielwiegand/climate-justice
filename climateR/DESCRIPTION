@@ -1,0 +1,12 @@
+Package: climateR
+Type: Package
+Title: climateR - Climate Justice Tool
+Version: 0.1.0
+Author: Daniel Wiegand
+Maintainer: Daniel Wiegand <an0nymus@posteo.de>
+Description: This package contains some helper functions for the Climate Justice Tool.
+License: 
+Encoding: UTF-8
+LazyData: true
+Depends: dplyr, ggplot2
+RoxygenNote: 7.0.2
