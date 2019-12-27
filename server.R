@@ -27,6 +27,9 @@ server <- function(input, output, session) {
   calculation_approach <- reactive({
     input$selected_calculation_approach
   })
+  
+  selected_countries <- c("Australia", "Brazil", "Burundi", "Canada", "China", "Chile", "Ethiopia", "France", 
+                          "Germany", "India", "Japan", "Qatar", "Russia", "Spain", "United Kingdom", "United States", "United Arab Emirates")
 
 
   # IMPORTANT VARIABLES
@@ -229,6 +232,20 @@ server <- function(input, output, session) {
       geom_bar_interactive(aes(data_id = data_id, tooltip = paste0(country, ": ", round(budget_left_perc, 1), "% of budget left")), show.legend = FALSE, stat = "identity") +
       coord_flip() +
       theme_test() +
+      theme(
+        panel.background = element_rect(fill = "transparent"), # bg of the panel
+        panel.grid.major = element_blank(), # get rid of major grid
+        panel.grid.minor = element_blank(), # get rid of minor grid
+        panel.border = element_rect(colour = "transparent", fill = NA, size = 0),
+        plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot,
+        title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        axis.text.x = element_text(angle = 90),
+        legend.background = element_rect(fill = "transparent", colour = NA), # get rid of legend bg
+        legend.box.background = element_rect(fill = "transparent", colour = NA), # get rid of legend panel bg
+        legend.text = element_text(colour = "white"),
+        legend.key = element_blank() # Removes frame around boxes
+      ) +
       facet_grid(~ budget_left > 0, scales="free", labeller = as_labeller(c("TRUE" = "Leaders", "FALSE" = "Laggards"))) +
       labs(title = "Leaders and laggards", subtitle = "Countries performing worst / best regarding their emission budget", x = "Country", y = "Budget left (%)") +
       scale_fill_gradientn(colours = c("red", "white", "green"),
@@ -236,16 +253,16 @@ server <- function(input, output, session) {
   })
   
   output$barchart_leaders_laggards <- renderGirafe(
-    girafe(ggobj = barchart_leaders_laggards())
+    girafe(ggobj = barchart_leaders_laggards(), width_svg = 10, height_svg = 5)
   )
 
 
   # Heatmap: How many of the just budget is left? (for all years between base year and maximum year) ####
   heatmap_budget_left_allyears <- reactive({
     just_emission_budgets_countries_left() %>%
+      filter(country %in% selected_countries) %>%
       na.omit() %>%
       ggplot() +
-      theme(axis.text.x = element_text(angle = 90)) +
       geom_tile_interactive(aes(x = country, y = year, fill = budget_left_perc, data_id = data_id,
                                 tooltip = paste0(country, " (", year, "): ", round(budget_left_perc, 1), "% of budget left")), color = "white") +
       scale_fill_gradientn(colours = c("slateblue4", "red", "orange", "white", "lightgreen", "chartreuse3", "darkgreen"),
@@ -253,11 +270,27 @@ server <- function(input, output, session) {
                            na.value = "grey", name = "% budget left") +
       coord_flip() +
       scale_y_continuous(breaks = seq(base_year(), maximum_year, 1)) +
+      theme(
+        panel.background = element_rect(fill = "transparent"), # bg of the panel
+        panel.grid.major = element_blank(), # get rid of major grid
+        panel.grid.minor = element_blank(), # get rid of minor grid
+        panel.border = element_rect(colour = "transparent", fill = NA, size = 0),
+        plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
+        # plot.title = element_text(size = 8),
+        # plot.subtitle = element_text(size = 6),
+        title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        axis.text.x = element_text(angle = 90),
+        legend.background = element_rect(fill = "transparent", colour = NA), # get rid of legend bg
+        legend.box.background = element_rect(fill = "transparent", colour = NA), # get rid of legend panel bg
+        legend.text = element_text(colour = "white"),
+        legend.key = element_blank() # Removes frame around boxes
+      ) +
       labs(x = "Country", y = "Year", title = "Budget consumption", subtitle = "Percent of budget left per country and year")
   })
   
   output$heatmap_budget_left_allyears <- renderGirafe(
-    girafe(ggobj = heatmap_budget_left_allyears())
+    girafe(ggobj = heatmap_budget_left_allyears(), width_svg = 10, height_svg = 5)
   )
 
   barchart_just_budget_scales <- reactive({

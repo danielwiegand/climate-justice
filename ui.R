@@ -61,12 +61,6 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                       top = "35%", right = "10%", fixed = T
                                     )
                                     
-                                    # girafeOutput("bump_chart_emitters"),
-                                    # 
-                                    # girafeOutput("barchart_leaders_laggards"),
-                                    # 
-                                    # girafeOutput("heatmap_budget_left_allyears")
-                                    
                            ),
                            
                            tabPanel("Next page",
@@ -89,8 +83,33 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                       top = "35%", right = "10%", fixed = T
                                     )
                                     
-                           )
+                           ),
+                           
+                           
+                           tabPanel("Budget left",
+                                    
+                                    girafeOutput("heatmap_budget_left_allyears"),
+                                    
+                                    absolutePanel(
+                                      actionButton("forwardPage5", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                      top = "35%", right = "10%", fixed = T
+                                    )
+                         ),
+                         
+                         tabPanel("Leaders and laggards",
+                                  
+                                  girafeOutput("barchart_leaders_laggards"),
+                                  
+                                  absolutePanel(
+                                    actionButton("forwardPage6", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                    top = "35%", right = "10%", fixed = T
+                                  )
                          )
+                         
+                         )
+                         # girafeOutput("bump_chart_emitters"),
+                         
+                         
                   )
                 )
 )
