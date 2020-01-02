@@ -1,5 +1,7 @@
 .girafe_container_std svg {
-	max-height: none!important; // Needed to make girafe outputs fill the screen
+	max-height: none!important; /* Needed to make girafe outputs fill the screen */
+	max-width: none!important;
+	height:70vh!important;
 }
 
 .btn-default {
@@ -31,4 +33,24 @@
 /* Adjust height of leaflet plots */
 .leaflet {
 	height:70vh!important;
+}
+
+/* Make all girafe objects transparent */
+.girafe_container_std svg g rect:first-of-type {
+	fill-opacity:0;
+	stroke-width:0;
+}
+
+.nav-tabs {
+	border-bottom:1px solid #FFF;
+}
+
+.nav-tabs li.active a {
+	border:1px solid #FFF;
+	border-bottom-color: rgb(28, 30, 34);
+}
+
+.nav-tabs > li > a:hover {
+	border:1px solid #FFF;
+	border-bottom-color: rgb(28, 30, 34);
 }

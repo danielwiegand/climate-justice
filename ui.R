@@ -15,10 +15,14 @@ library(broom) # tidy
 library(ggiraph)
 library(leaflet)
 library(RColorBrewer)
+library(slickR) # Slideshow
+library(shinyjs)
 
 # UI ####
 
 ui <- fluidPage(theme = shinytheme("slate"),
+                
+                useShinyjs(),
                 
                 tags$head(
                   tags$link(rel="stylesheet", type="text/css", href="style.css")
@@ -32,20 +36,89 @@ ui <- fluidPage(theme = shinytheme("slate"),
                          
                          tabsetPanel(id = "tabset-panel",
                                      
-                                     # Status quo ####
+                                     # Start page ####
+                                     
+                                     tabPanel("Introduction",
+                                              
+                                              img(id = "startpage_image_1", src = "climate-justice1.jpg", style = "height: 75vh;"),
+                                              hidden(img(id = "startpage_image_2", src = "climate-justice2.jpg", style = "height: 75vh")),
+                                              hidden(img(id = "startpage_image_3", src = "climate-justice3.jpg", style = "height: 75vh")),
+                                              
+                                              absolutePanel(draggable = T,
+                                                            
+                                                            wellPanel("The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
+                                                                       In the 20th century, this rise dramatically accelerated.
+                                                                      The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
+                                                                       In the 20th century, this rise dramatically accelerated.
+                                                                      The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
+                                                                       In the 20th century, this rise dramatically accelerated."),
+                                                            style = "z-index: 100; opacity: 0.85;", top = "20%", left = "12%", fixed = T, width = "15%", align = "justify"
+                                                            
+                                              ),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage1", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                              ),
+                                     
+                                     
+                                     # Emission history ####
+                                     
+                                     tabPanel("Temperatures",
+                                              
+                                              absolutePanel(draggable = T,
+                                                            
+                                                            wellPanel("The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
+                                                                       In the 20th century, this rise dramatically accelerated."),
+                                                            style = "z-index: 10; opacity: 0.65;", top = "30%", left = "20%", fixed = T, width = "15%", align = "justify"
+                                                            
+                                              ),
+                                              
+                                              girafeOutput("linechart_temperatures", width = "90%"),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage2", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
+                                     # Status Quo ####
                                      
                                      tabPanel("Status Quo",
                                               
                                               absolutePanel(draggable = T,
                                                             
                                                             wellPanel("The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
-                                                                       In the 20th century, this rise dramatically accelerated. 
-                                                                       The chart shows that emissions are distributed unevenly among regions and states."),
-                                                            style = "z-index: 10; opacity: 0.65;", top = "30%", left = "10%", fixed = T, width = "15%", align = "justify"
+                                                                       In the 20th century, this rise dramatically accelerated."),
+                                                            style = "z-index: 10; opacity: 0.65;", top = "30%", left = "20%", fixed = T, width = "15%", align = "justify"
                                                             
                                               ),
                                               
                                               girafeOutput("barchart_continents", width = "90%"),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage2", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
+                                     # Consequences ####
+                                     
+                                     tabPanel("Consequences",
+                                              
+                                              absolutePanel(draggable = T,
+                                                            
+                                                            wellPanel("The world's greenhouse gas emissions rise steadily since the beginning of the industrial revolution. 
+                                                                       In the 20th century, this rise dramatically accelerated."),
+                                                            style = "z-index: 10; opacity: 0.65;", top = "30%", left = "20%", fixed = T, width = "15%", align = "justify"
+                                                            
+                                              ),
+                                              
+                                              htmlOutput("iframe_sea_level", width = "90%"),
                                               
                                               absolutePanel(
                                                 actionButton("forwardPage2", "", icon = icon("chevron-right"), class = "scroll-button"),
@@ -80,15 +153,43 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               
                                      ),
                                      
+                                     # Rect chart ####
+                                     
+                                     tabPanel("Rect chart",
+                                              
+                                              girafeOutput("rect_emissions_per_cap", width = "90%"),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
+                                     # Rect chart ####
+                                     
+                                     tabPanel("GDP",
+                                              
+                                              girafeOutput("scatterplot_emissions_gdp", width = "90%"),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
                                      # Budget left ####
                                      
                                      tabPanel("Budget left",
                                               
                                               absolutePanel(draggable = T,
                                                             
-                                                            wellPanel(
+                                                            wellPanel(style = "width:300px;",
                                                               
-                                                              sliderInput("base_year", "Select base year", min = 1950, max = 2017, value = 1992, step = 1),
+                                                              selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
+                                                              
+                                                              sliderInput("base_year", "Select base year", min = 1950, max = 2017, value = 1992, step = 1, sep = ""),
                                                               
                                                               selectInput("selected_probability", "Select probability", choices = c("66%" = "66",
                                                                                                                                     "50%" = "50",
@@ -100,10 +201,12 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                           selected = "1.5°C"),
                                                               
                                                               selectInput("selected_calculation_approach", "Select a calculation approach",
-                                                                          choices = c("Per capita approach" = "pca"),
+                                                                          choices = c("Budget approach" = "budget",
+                                                                                      "Grandfathering" = "grandfathering",
+                                                                                      "Contraction and Convergence" = "convergence"),
                                                                           selected = "pca")
                                                               
-                                                            ), style = "z-index: 10; opacity: 0.65;", top = "44%", left = "3%", fixed = T
+                                                            ), style = "z-index: 10; opacity: 0.65;", top = "30%", left = "1%", fixed = T
                                                             
                                               ),
                                               
