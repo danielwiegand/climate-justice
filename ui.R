@@ -17,6 +17,10 @@ library(leaflet)
 library(RColorBrewer)
 library(slickR) # Slideshow
 library(shinyjs)
+library(knitr)
+library(kableExtra)
+library(ggrepel)
+
 
 # UI ####
 
@@ -166,17 +170,111 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               
                                      ),
                                      
-                                     # Rect chart ####
+                                     # GDP ####
                                      
                                      tabPanel("GDP",
                                               
                                               girafeOutput("scatterplot_emissions_gdp", width = "90%"),
+
+                                              absolutePanel(
+                                                wellPanel(
+                                                  uiOutput("scatterplot_emissions_gdp_year"),
+                                                  style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;"
+                                                ),
+                                                bottom = "24%", right = "20%", width = "20%", fixed = T, draggable = T
+                                              ),
+                                              
+                                              absolutePanel(draggable = T,
+                                                            wellPanel(style = "width:300px;",
+                                                                      selectizeInput("selected_countries_gdp", "Highlight countries", choices = NULL, multiple = TRUE),
+                                                                      style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;"
+                                                            ),
+                                                            top = "30%", left = "15%"
+                                              ),
                                               
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               )
                                               
+                                     ),
+                                     
+                                     # Carbon budgets ####
+                                     
+                                     tabPanel("Carbon budgets",
+                                              
+                                              girafeOutput("scatterplot_carbon_budgets", width = "90%"),
+                                            
+                                              absolutePanel(
+                                                actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
+                                     # Justice approaches ####
+                                     
+                                     tabPanel("Justice approaches",
+                                              
+                                              fluidRow(
+                                                column(8,
+                                              
+                                                  htmlOutput("approaches_table", style = "width:50vw;")
+                                                  
+                                                ),
+                                                
+                                                column(4,
+                                                       
+                                                       girafeOutput("exemplary_years_left")
+                                                       
+                                                )
+                                              ),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
+                                              
+                                     ),
+                                     
+                                     
+                                     # Years left ####
+                                     
+                                     tabPanel("Years left",
+                                              
+                                              absolutePanel(draggable = T,
+                                                            
+                                                            wellPanel(style = "width:300px;",
+                                                                      
+                                                                      selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
+                                                                      
+                                                                      sliderInput("base_year", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
+                                                                      
+                                                                      selectInput("selected_probability", "Select probability", choices = c("66%" = "66",
+                                                                                                                                            "50%" = "50",
+                                                                                                                                            "33%" = "33"),
+                                                                                  selected = "66%"),
+                                                                      
+                                                                      selectInput("selected_warming_degrees", "Select warming degrees",
+                                                                                  choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
+                                                                                  selected = "1.5°C"),
+                                                                      
+                                                                      selectInput("selected_calculation_approach", "Select a calculation approach",
+                                                                                  choices = c("Budget approach" = "budget",
+                                                                                              "Grandfathering" = "grandfathering",
+                                                                                              "Contraction and Convergence" = "convergence"),
+                                                                                  selected = "pca")
+                                                                      
+                                                            ), style = "z-index: 10; opacity: 0.65;", top = "30%", left = "1%", fixed = T
+                                                            
+                                              ),
+                                              
+                                              girafeOutput("years_left"),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardPage5", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
+                                              )
                                      ),
                                      
                                      # Budget left ####
@@ -189,7 +287,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                               
                                                               selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
                                                               
-                                                              sliderInput("base_year", "Select base year", min = 1950, max = 2017, value = 1992, step = 1, sep = ""),
+                                                              sliderInput("base_year", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
                                                               
                                                               selectInput("selected_probability", "Select probability", choices = c("66%" = "66",
                                                                                                                                     "50%" = "50",

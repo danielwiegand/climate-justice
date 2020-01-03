@@ -50,7 +50,14 @@
 	border-bottom-color: rgb(28, 30, 34);
 }
 
+/*
 .nav-tabs > li > a:hover {
 	border:1px solid #FFF;
 	border-bottom-color: rgb(28, 30, 34);
+}
+*/
+
+.table {
+	background-color:transparent;
+	border-collapse:initial;
 }
