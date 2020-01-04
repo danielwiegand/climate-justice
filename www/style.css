@@ -41,6 +41,10 @@
 	stroke-width:0;
 }
 
+.ggiraph-toolbar {
+	display:none;
+}
+
 .nav-tabs {
 	border-bottom:1px solid #FFF;
 }
@@ -60,4 +64,9 @@
 .table {
 	background-color:transparent;
 	border-collapse:initial;
+}
+
+.glyphicon-play {
+	font-size:25px;
+	margin-top:10px;
 }

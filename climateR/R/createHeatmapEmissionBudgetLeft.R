@@ -8,7 +8,7 @@
 #' @export
 
 
-heatmapEmissionBudgetLeft <- function(data, scales, from, to) {
+createHeatmapEmissionBudgetLeft <- function(data, scales, from, to) {
   data %>%
     na.omit() %>%
     ggplot() +

@@ -285,20 +285,20 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             
                                                             wellPanel(style = "width:300px;",
                                                               
-                                                              selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
+                                                              selectizeInput("selected_countries_2", "Select countries", choices = NULL, multiple = TRUE),
                                                               
-                                                              sliderInput("base_year", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
+                                                              sliderInput("base_year_2", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
                                                               
-                                                              selectInput("selected_probability", "Select probability", choices = c("66%" = "66",
+                                                              selectInput("selected_probability_2", "Select probability", choices = c("66%" = "66",
                                                                                                                                     "50%" = "50",
                                                                                                                                     "33%" = "33"),
                                                                           selected = "66%"),
                                                               
-                                                              selectInput("selected_warming_degrees", "Select warming degrees",
+                                                              selectInput("selected_warming_degrees_2", "Select warming degrees",
                                                                           choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
                                                                           selected = "1.5°C"),
                                                               
-                                                              selectInput("selected_calculation_approach", "Select a calculation approach",
+                                                              selectInput("selected_calculation_approach_2", "Select a calculation approach",
                                                                           choices = c("Budget approach" = "budget",
                                                                                       "Grandfathering" = "grandfathering",
                                                                                       "Contraction and Convergence" = "convergence"),

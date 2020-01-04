@@ -4,7 +4,7 @@
 #' @import dplyr, ggplot2, RColorBrewer
 #' @export
 
-prepareLineChartContinents <- function(data) {
+prepareLineChartContinents <- function(data, theme) {
 
   linechart <- data %>%
     mutate(emissions = emissions / 1000000000) %>% # Convert to Gt
@@ -17,14 +17,8 @@ prepareLineChartContinents <- function(data) {
     scale_x_continuous(breaks = seq(1950, 2020, 5)) +
     scale_y_continuous(breaks = seq(0, 10, 1)) +
     theme_test() +
+    theme +
     theme(
-      panel.background = element_rect(fill = "transparent"), # bg of the panel
-      panel.grid.major = element_blank(), # get rid of major grid
-      panel.grid.minor = element_blank(), # get rid of minor grid
-      panel.border = element_rect(colour = "transparent", fill = NA, size = 0),
-      plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
-      title = element_text(colour = "white"),
-      axis.text = element_text(colour = "white"),
       axis.text.x = element_text(angle = 90),
       legend.background = element_rect(fill = "transparent", colour = NA), # get rid of legend bg
       legend.box.background = element_rect(fill = "transparent", colour = NA), # get rid of legend panel bg
