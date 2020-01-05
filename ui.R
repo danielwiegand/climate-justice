@@ -163,6 +163,14 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               
                                               girafeOutput("rect_emissions_per_cap", width = "90%"),
                                               
+                                              absolutePanel(draggable = T,
+                                                            wellPanel(style = "width:300px;",
+                                                                      sliderInput("year_emissions_per_region", label = "Year", min = 1960, max = 2018, step = 1, value = 1960, animate = T, sep = ""),
+                                                                      style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;"
+                                                            ),
+                                                            top = "30%", right = "15%"
+                                              ),
+                                              
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
@@ -189,7 +197,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       selectizeInput("selected_countries_gdp", "Highlight countries", choices = NULL, multiple = TRUE),
                                                                       style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;"
                                                             ),
-                                                            top = "30%", left = "15%"
+                                                            top = "25%", left = "15%"
                                               ),
                                               
                                               absolutePanel(
@@ -261,11 +269,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectInput("selected_calculation_approach", "Select a calculation approach",
                                                                                   choices = c("Budget approach" = "budget",
-                                                                                              "Grandfathering" = "grandfathering",
-                                                                                              "Contraction and Convergence" = "convergence"),
-                                                                                  selected = "pca")
+                                                                                              "Contraction and Convergence" = "convergence",
+                                                                                              "Grandfathering" = "grandfathering"),
+                                                                                  selected = "Budget approach")
                                                                       
-                                                            ), style = "z-index: 10; opacity: 0.65;", top = "30%", left = "1%", fixed = T
+                                                            ), style = "z-index: 10; opacity: 0.65;", top = "25%", left = "4%", fixed = T
                                                             
                                               ),
                                               
@@ -300,11 +308,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                               
                                                               selectInput("selected_calculation_approach_2", "Select a calculation approach",
                                                                           choices = c("Budget approach" = "budget",
-                                                                                      "Grandfathering" = "grandfathering",
-                                                                                      "Contraction and Convergence" = "convergence"),
-                                                                          selected = "pca")
+                                                                                      "Contraction and Convergence" = "convergence",
+                                                                                      "Grandfathering" = "grandfathering"),
+                                                                          selected = "Budget approach")
                                                               
-                                                            ), style = "z-index: 10; opacity: 0.65;", top = "30%", left = "1%", fixed = T
+                                                            ), style = "z-index: 10; opacity: 0.65;", top = "25%", left = "4%", fixed = T
                                                             
                                               ),
                                               
@@ -321,6 +329,31 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                      tabPanel("Leaders and laggards",
                                               
                                               girafeOutput("barchart_leaders_laggards"),
+                                              
+                                              absolutePanel(draggable = T,
+                                                            
+                                                            wellPanel(style = "width:300px;",
+                                                                      
+                                                                      sliderInput("base_year_3", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
+                                                                      
+                                                                      selectInput("selected_probability_3", "Select probability", choices = c("66%" = "66",
+                                                                                                                                              "50%" = "50",
+                                                                                                                                              "33%" = "33"),
+                                                                                  selected = "66%"),
+                                                                      
+                                                                      selectInput("selected_warming_degrees_3", "Select warming degrees",
+                                                                                  choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
+                                                                                  selected = "1.5°C"),
+                                                                      
+                                                                      selectInput("selected_calculation_approach_3", "Select a calculation approach",
+                                                                                  choices = c("Budget approach" = "budget",
+                                                                                              "Contraction and Convergence" = "convergence",
+                                                                                              "Grandfathering" = "grandfathering"),
+                                                                                  selected = "Budget approach")
+                                                                      
+                                                            ), style = "z-index: 10; opacity: 0.65;", top = "25%", left = "4%", fixed = T
+                                                            
+                                              ),
                                               
                                               absolutePanel(
                                                 actionButton("forwardPage6", "", icon = icon("chevron-right"), class = "scroll-button"),

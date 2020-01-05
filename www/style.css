@@ -69,4 +69,20 @@
 .glyphicon-play {
 	font-size:25px;
 	margin-top:10px;
+	position: absolute;
+	right: 20px;
+	top: 5px;
+}
+
+.glyphicon-pause {
+	font-size:25px;
+	margin-top:10px;
+	position: absolute;
+	right: 20px;
+	top: 5px;
+}
+
+/* Fix display of NA in leaflet legend */
+.info.legend.leaflet-control br {
+	clear:both;
 }

@@ -1,9 +1,14 @@
 server <- function(input, output, session) {
 
   # Tabellen: https://www.r-bloggers.com/vignette-downloadable-tables-in-rmarkdown-with-the-dt-package/
-  # base year muss noch richtig gestellt werden bei den anderen Ansätzen (auf 100%)
   # Gerechtigkeitsargu verfeinern
+  # Die Rechtspfeile machen
+  # Die Texte machen
+  # Pfeile in die Plots machen
+  # Contraction stimmt noch nicht ganz
+  # Grenzwerte wenn man 2018 eingibt
   # Quellen und Autor
+  # AWS anmelden
   # Farbskala bei Heatmap bei späteren basisjahren (keine neg. Werte)  ist falsch
   
   # GLIEDERUNG ####
@@ -54,7 +59,7 @@ server <- function(input, output, session) {
   carbon_budgets <- importIPCCData()
   
   countries_emissions <- importCountriesEmissionData()
-  
+
   continents_emissions <- importContinentsEmissionData()
   
   historical_temperatures <- read.csv("src/ourworldindata/temperature-anomaly.csv", stringsAsFactors = F) %>%
@@ -87,11 +92,15 @@ server <- function(input, output, session) {
   selected_countries <- reactive({
     input$selected_countries
   })
+  
+  # OPTIONS ####
+  
+  options(scipen = 999) # Disable scientific notation
 
   # IMPORTANT VARIABLES ####
 
   # Year where the IPCC budgets used were published
-  year_ipcc_budgets <- 2018 # For SR1.5
+  year_ipcc_budgets <- 2018 # For the IPCC SR1.5 report
 
   # Minimum and maximum years of available emissions data
   maximum_year <- max(countries_emissions$year)
@@ -101,6 +110,7 @@ server <- function(input, output, session) {
     countries_emissions %>%
       filter(year >= base_year()) %>%
       group_by(country) %>%
+      mutate(emissions = ifelse(year == base_year(), 0, emissions)) %>% # Base year is not part of the period the remaining budget applies to
       summarize(total_emis_since_by_gt = sum(emissions)/1000000000) %>%
       ungroup()
   })
@@ -109,15 +119,17 @@ server <- function(input, output, session) {
     countries_emissions %>%
       filter(year >= base_year()) %>%
       group_by(country) %>%
+      mutate(emissions = ifelse(year == base_year(), 0, emissions)) %>% # Base year is not part of the period the remaining budget applies to
       mutate(cumulated_emis_since_by_gt = cumsum(emissions)/1000000000) %>%
       ungroup() %>%
       select(country, year, cumulated_emis_since_by_gt)
   })
 
+
   # Total global emissions between base year and year of IPCC budget publication
   total_global_emis_since_base_year <- reactive({
     global_emissions %>%
-      filter(year >= base_year() & year <= year_ipcc_budgets) %>%
+      filter(year > base_year() & year <= year_ipcc_budgets) %>% # Base year is not part of the period the remaining budget applies to
       summarize(total_global_emis = sum(emissions)) %>%
       as.numeric()
   })
@@ -164,7 +176,10 @@ server <- function(input, output, session) {
   linechart_temperatures <- prepareLineChartTemperatures(
     data = historical_temperatures, 
     theme = ggplot_transparent_theme
-  )
+  ) %>%
+    makeLabelArrows(x = 1965, xend = 1970, y = .3, yend = .1, label = "Temporary cooling, possibly <a href = 'https://insideclimatenews.org/news/20100923/global-warming-may-have-slowed-1970s-due-suddenly-cooler-oceans'>man-made</a>") %>%
+    makeLabelArrows(x = 1985, xend = 1990, y = .6, yend = .4, label = "Rapid warming since the 90s") %>%
+    makeLabelArrows(x = 1860, xend = 1865, y = .2, yend = .01, label = "This line marks the average \nbetween 1961 and 1990")
   
   output$linechart_temperatures <- renderGirafe(
     girafe(ggobj = linechart_temperatures, width_svg = 10, height_svg = 5) %>%
@@ -181,7 +196,9 @@ server <- function(input, output, session) {
 
   
     barchart_continents <- prepareBarChartContinents(data = continents_emissions, theme = ggplot_transparent_theme) %>%
-      makeLabelArrows(x = 2006, xend = 2009, y = 33, yend = 30, label = "Financial crisis")
+    makeLabelArrows(x = 2006, xend = 2008.8, y = 36, yend = 31, label = "Financial crisis 2009 lets\nemissions decline temporarily") %>%
+    makeLabelArrows(x = 1980, xend = 1982, y = 22, yend = 19, label = "Oil crisis") %>%
+    makeLabelArrows(x = 1989, xend = 1991, y = 26, yend = 23, label = "Dissolution of the Soviet Union")
     
     output$barchart_continents <- renderGirafe({
       girafe(ggobj = barchart_continents, width_svg = 10, height_svg = 5)
@@ -191,11 +208,12 @@ server <- function(input, output, session) {
     # Line chart: Emissions per continent + year ####
   
     linechart_continents <- prepareLineChartContinents(continents_emissions, theme = ggplot_transparent_theme) %>%
-      makeLabelArrows(x = 1998, xend = 2001, y = 4.5, yend = 3.6, label = "China's emissions start \n to rise drastically")
+      makeLabelArrows(x = 1998, xend = 2001, y = 10, yend = 8, label = "China's emissions start \n to rise drastically") %>%
+      makeLabelArrows(x = 1987, xend = 1990, y = 10.2, yend = 8.2, label = "Europe's emissions decline after \n the dissolution of Soviet Union")
 
     output$linechart_continents <- renderGirafe(
       girafe(ggobj = linechart_continents, width_svg = 10, height_svg = 5) %>%
-        girafe_options(opts_hover(css = "stroke:black; stroke-width:5px; fill:none;") )
+        girafe_options(opts_hover(css = "stroke:grey; stroke-width:2px; fill:none;") )
     )
   
   
@@ -225,15 +243,17 @@ server <- function(input, output, session) {
         data_column = "emis_per_capita",
         palette = palette_world_map_emission_per_capita,
         tooltip = tooltip_world_map_emission_per_capita,
-        chart_title = "Emissions per capita (t CO2)"
+        chart_title = "Emissions per <br>capita (t CO2)"
       )
     )
   
     # Rect chart: Emissions per capita and continent ####
     
+    cols_emissions_per_cap_continent <- colorRampPalette(colors = brewer.pal(9, "Paired")[4:9])
+    
     chart_emissions_per_cap_continents <- reactive({
       continents_emissions %>%
-        filter(year == base_year()) %>%
+        filter(year == input$year_emissions_per_region) %>%
         mutate(population = population / 1000000000) %>%
         arrange(-emis_per_capita) %>%
         mutate(emis_per_capita = round(emis_per_capita, 1),
@@ -241,15 +261,14 @@ server <- function(input, output, session) {
                emission_perc = round(emissions / sum(emissions, na.rm = T) * 100, 1),
                xmax = cumsum(population),
                xmin = lag(xmax, default = 0)) %>%
-        ggplot() +
-        geom_rect_interactive(aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = emis_per_capita, fill = continent, data_id = data_id,
-                                  tooltip = paste0(continent, ": ", emis_per_capita, " t CO2 per capita\n", population_perc, "% of world population\n", emission_perc, "% of world emissions"))) +
-        geom_text_repel(aes(x = xmin, y = emis_per_capita, label = continent)) +
-        ggplot_transparent_theme +
-        scale_fill_brewer(palette = "Reds", name = "Accent", direction = -1) +
-        scale_x_continuous(breaks = seq(0, 8, 1)) +
-        labs(x = "Population (billions)", y = "Emissions per capita (t CO2e)",
-             title = "Emissions per region and capita", subtitle = "Relation between per capita emissions and population size")
+        mutate(pos_label = rowMeans(select(., c("xmin", "xmax")))) %>%
+        createRectPlotEmissionsRegion(
+          data = .,
+          theme = ggplot_transparent_theme,
+          cols = cols_emissions_per_cap_continent,
+          year = input$year_emissions_per_region,
+          pos_label = pos_label
+        )
     })
     
     output$rect_emissions_per_cap <- renderGirafe(
@@ -277,7 +296,7 @@ server <- function(input, output, session) {
       countries_emissions %>%
         mutate(label = ifelse(country %in% input$selected_countries_gdp, country, "")) %>%
         filter(is.finite(gdp_per_capita),
-               year == input$animate_emissions_gdp) %>% # Noch interaktiv machen
+               year == input$animate_emissions_gdp) %>%
         prepareScatterPlotGDP(data = ., 
                               theme = ggplot_transparent_theme,
                               limits_x = scatterplot_emissions_gdp_xaxis_limits,
@@ -407,6 +426,16 @@ server <- function(input, output, session) {
 
     # Per country: Assigned emission budgets (only for base year) ####
     
+    # observe(print(
+    #   # c(
+    #   # just_emission_budgets_countries() %>%
+    #   #   summarize(summe = sum(total_country_budget_gt, na.rm = T)),
+    #   # selected_carbon_budget_at_base_year()
+    #   # )
+    #   head(global_future_pathway_linear() %>% arrange(-year))
+    #   # global_emissions_base_year()
+    # ))
+    
   just_emission_budgets_countries <- reactive({
     
     if(input$selected_calculation_approach == "budget") {
@@ -435,7 +464,7 @@ server <- function(input, output, session) {
         group_by(country) %>%
         arrange(year) %>%
         mutate(emission_forecast = calculateContractionConvergence(emission_forecast, Ct, global_emissions, population_percentage)) %>%
-        mutate(total_country_budget_gt = sum(emission_forecast[-1])) %>% # Base year emissions (row 1) do not count to the remaining budget
+        mutate(total_country_budget_gt = sum(emission_forecast[-1]) / 1000000000) %>% # Base year emissions (row 1) do not count to the remaining budget
         ungroup() %>%
         filter(year == base_year()) %>%
         select(country, year, total_country_budget_gt, data_id)
@@ -458,27 +487,31 @@ server <- function(input, output, session) {
 
     # Barchart: How many years are left per country? ####
   
-  barchart_countries_years_left <- reactive({
-    req(selected_countries(), just_emission_budgets_countries(), total_country_emis_since_base_year())
-    just_emission_budgets_countries() %>%
-      filter(country %in% c(selected_countries())) %>%
-      left_join(total_country_emis_since_base_year()) %>%
-      left_join(countries_emissions) %>%
-      mutate(emissions = emissions / 1000000000) %>%
-      mutate(years_left_at_by = base_year() + total_country_budget_gt / emissions) %>%
-      ggplot() +
-      geom_segment(aes(x = country, xend = country, y = base_year(), yend = years_left_at_by), color = "grey") +
-      geom_point_interactive(aes(x = country, y = years_left_at_by, data_id = data_id, 
-                                 tooltip = paste0(country, ": Budget reaches until year ", round(years_left_at_by, 0)), size = 10, color = country)) +
-      coord_flip() +
-      ggplot_transparent_theme +
-      theme(legend.position = "none") +
-      labs(title = "Budget reach", subtitle = "Under constant base year emissions", x = "Country", y = "Budget reach (years)")
-    })
+    cols_countries_years_left <- colorRampPalette(colors = brewer.pal(9, "Paired"))
     
-    output$years_left <- renderGirafe({
-      girafe(ggobj = barchart_countries_years_left(), width_svg = 10, height_svg = 4.5)
-    })
+    barchart_countries_years_left <- reactive({
+      req(selected_countries(), just_emission_budgets_countries(), total_country_emis_since_base_year())
+      just_emission_budgets_countries() %>%
+        filter(country %in% c(selected_countries())) %>%
+        left_join(total_country_emis_since_base_year()) %>%
+        left_join(countries_emissions) %>%
+        mutate(emissions = emissions / 1000000000) %>%
+        mutate(years_left_at_by = base_year() + floor(total_country_budget_gt / emissions)) %>%
+        ggplot() +
+        geom_segment(aes(x = country, xend = country, y = base_year(), yend = years_left_at_by), color = "grey") +
+        geom_point_interactive(aes(x = country, y = years_left_at_by, data_id = data_id, 
+                                   tooltip = paste0(country, ": Budget reaches until year ", years_left_at_by), size = 10, color = country)) +
+        coord_flip() +
+        scale_color_manual(values = cols_countries_years_left(length(selected_countries()))) +
+        ggplot_transparent_theme +
+        theme(legend.position = "none",
+              axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
+        labs(title = "Budget reach", subtitle = "Under constant base year emissions", x = "Country", y = "Budget reach (year)")
+      })
+      
+      output$years_left <- renderGirafe({
+        girafe(ggobj = barchart_countries_years_left(), width_svg = 10, height_svg = 4.5)
+      })
   
     # Heatmap: How many of the just budget is left? (for all years between base year and maximum year) ####
     
@@ -488,10 +521,12 @@ server <- function(input, output, session) {
         createHeatmapEmissionBudgetLeft(data = .,
                                   scales = heatmap_just_budget_scales(),
                                   from = base_year(),
-                                  to = maximum_year)
+                                  to = maximum_year,
+                                  theme = ggplot_transparent_theme)
     })
     
     heatmap_just_budget_scales <- reactive({
+      req(selected_countries(), just_emission_budgets_countries_left())
       just_emission_budgets_countries_left() %>%
         filter(country %in% selected_countries()) %>%
         select(budget_left_perc) %>%
@@ -524,7 +559,7 @@ server <- function(input, output, session) {
     
   # OBSERVERS ####
   
-    # Sync second panel with base data with first one ####
+    # Sync all panels ####
     # In Shiny, you only can display an inputId once, but we need to have the same inputs (basie data for budget calculation) on several tabs
     # Thus, they have different inputIds, and we need this observer to synchronize them
     
@@ -548,7 +583,22 @@ server <- function(input, output, session) {
     })
     observe({
       updateSliderInput(
+        session, inputId = "base_year", value = c(input$base_year_3)
+      )
+    })
+    observe({
+      updateSliderInput(
         session, inputId = "base_year_2", value = c(input$base_year)
+      )
+    })
+    observe({
+      updateSliderInput(
+        session, inputId = "base_year_3", value = c(input$base_year_2)
+      )
+    })
+    observe({
+      updateSliderInput(
+        session, inputId = "base_year__3", value = c(input$base_year)
       )
     })
     
@@ -560,7 +610,22 @@ server <- function(input, output, session) {
     })
     observe({
       updateSelectInput(
+        session, inputId = "selected_probability", selected = c(input$selected_probability_3)
+      )
+    })
+    observe({
+      updateSelectInput(
         session, inputId = "selected_probability_2", selected = c(input$selected_probability)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_probability_3", selected = c(input$selected_probability_2)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_probability__3", selected = c(input$selected_probability)
       )
     })
     
@@ -572,7 +637,22 @@ server <- function(input, output, session) {
     })
     observe({
       updateSelectInput(
+        session, inputId = "selected_warming_degrees", selected = c(input$selected_warming_degrees_3)
+      )
+    })
+    observe({
+      updateSelectInput(
         session, inputId = "selected_warming_degrees_2", selected = c(input$selected_warming_degrees)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_warming_degrees_3", selected = c(input$selected_warming_degrees_2)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_warming_degrees_3", selected = c(input$selected_warming_degrees)
       )
     })
     
@@ -584,7 +664,22 @@ server <- function(input, output, session) {
     })
     observe({
       updateSelectInput(
+        session, inputId = "selected_calculation_approach", selected = c(input$selected_calculation_approach_3)
+      )
+    })
+    observe({
+      updateSelectInput(
         session, inputId = "selected_calculation_approach_2", selected = c(input$selected_calculation_approach)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_calculation_approach_3", selected = c(input$selected_calculation_approach_2)
+      )
+    })
+    observe({
+      updateSelectInput(
+        session, inputId = "selected_calculation_approach_3", selected = c(input$selected_calculation_approach)
       )
     })
     
@@ -624,6 +719,14 @@ server <- function(input, output, session) {
       )
     })
     
+    observe({
+      updateSelectizeInput(session, "selected_countries_3",
+                           choices = country_list,
+                           selected = c("Australia", "Brazil", "Burundi", "Canada", "China", "Chile", "Ethiopia", "France",
+                                        "Germany", "India", "Japan", "Qatar", "Russia", "Spain", "United Kingdom", "United States", "United Arab Emirates"),
+                           server = T
+      )
+    })
     
     # Images on start page ####
     

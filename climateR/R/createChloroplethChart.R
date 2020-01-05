@@ -22,7 +22,7 @@ createChloroplethChart <- function(data, palette, tooltip, data_column, chart_ti
                   style = list("font-weight" = "normal", padding = "3px 8px"),
                   textsize = "11px",
                   direction = "auto")) %>%
-    addLegend(pal = palette, values = ~data@data[[data_column]], opacity = 0.9, title = chart_title, position = "bottomleft")
+    addLegend(pal = palette, values = ~data@data[[data_column]], opacity = 0.8, title = chart_title, position = "bottomleft")
 
   return(chloropleth)
 

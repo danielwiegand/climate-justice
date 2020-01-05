@@ -14,7 +14,7 @@ prepareScatterPlotBudgets <- function(data, theme) {
     coord_fixed(ratio = 1.4) +
     theme +
     theme(legend.position = "none",
-          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))) +
+          axis.title.x = element_text(margin = margin(t = 15, r = 0, b = 0, l = 0))) +
     scale_color_gradient(low = "red", high = "green") +
     labs(title = "Remaining carbon budget (2018)", subtitle = "Leading to different amounts of warming under different probabilities",
          x = "°C of warming by 2100", y = "Probability (%)")

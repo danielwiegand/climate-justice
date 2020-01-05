@@ -8,7 +8,7 @@
 #' @export
 
 
-createHeatmapEmissionBudgetLeft <- function(data, scales, from, to) {
+createHeatmapEmissionBudgetLeft <- function(data, scales, from, to, theme) {
   data %>%
     na.omit() %>%
     ggplot() +
@@ -19,16 +19,9 @@ createHeatmapEmissionBudgetLeft <- function(data, scales, from, to) {
                          na.value = "grey", name = "% budget left") +
     coord_flip() +
     scale_y_continuous(breaks = seq(from, to, 1)) +
+    theme +
     theme(
-      panel.background = element_rect(fill = "transparent"), # bg of the panel
-      panel.grid.major = element_blank(), # get rid of major grid
-      panel.grid.minor = element_blank(), # get rid of minor grid
-      panel.border = element_rect(colour = "transparent", fill = NA, size = 0),
-      plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
-      # plot.title = element_text(size = 8),
-      # plot.subtitle = element_text(size = 6),
-      title = element_text(colour = "white"),
-      axis.text = element_text(colour = "white"),
+      axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
       axis.text.x = element_text(angle = 90),
       legend.background = element_rect(fill = "transparent", colour = NA), # get rid of legend bg
       legend.box.background = element_rect(fill = "transparent", colour = NA), # get rid of legend panel bg
