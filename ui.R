@@ -20,7 +20,9 @@ library(shinyjs)
 library(knitr)
 library(kableExtra)
 library(ggrepel)
+library(shinyWidgets)
 
+useShinyjs()
 
 # UI ####
 
@@ -64,8 +66,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                 actionButton("forwardPage1", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               )
-                                              
-                                              ),
+                                     ),
                                      
                                      
                                      # Emission history ####
@@ -85,6 +86,22 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage2", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_temperature_text",
+                                                                "Temperature anomalies are based on the HadCRUT4 land-sea dataset as published by the ",
+                                                                tags$a(href = "https://www.metoffice.gov.uk/hadobs/hadcrut4/data/current/download.html", "Met Office Hadley Centre"),
+                                                                ".", tags$br(), "Temperature anomalies are given in degrees celcius relative to the average temperature over the period 1961-1990.
+                                                                The median temperature anomaly, as well as the upper and lower bound anomalies (with a 95% confidence interval) 
+                                                                are provided. "
+                                                            )),
+                                                            tags$div(id = "sources_temperature",
+                                                                     icon("info-circle"),
+                                                              tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -106,6 +123,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage2", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_emissions_timeseries_text",
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas."),
+                                                                        "Displayed are only emissions of carbon dioxide (no other greenhouse gases included).", tags$br(), 
+                                                                        "Emissions are attributed to the country / continent in which they physically occur."
+                                                              )),
+                                                            tags$div(id = "sources_emissions_timeseries",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -140,6 +172,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_continent_emissions_text",
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas."),
+                                                                        "Displayed are only emissions of carbon dioxide (no other greenhouse gases included).", tags$br(), 
+                                                                        "Emissions are attributed to the country / continent in which they physically occur."
+                                                              )),
+                                                            tags$div(id = "sources_continent_emissions",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -153,6 +200,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage4", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_chloropleth_text",
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas."),
+                                                                        "Displayed are only emissions of carbon dioxide (no other greenhouse gases included).", tags$br(), 
+                                                                        "Emissions are attributed to the country / continent in which they physically occur."
+                                                              )),
+                                                            tags$div(id = "sources_chloropleth", style = "color:#5B5B5B;",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "5%", right = "2%"
                                               )
                                               
                                      ),
@@ -174,6 +236,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_rect_text",
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas."),
+                                                                        "Displayed are only emissions of carbon dioxide (no other greenhouse gases included).", tags$br(), 
+                                                                        "Emissions are attributed to the country / continent in which they physically occur."
+                                                              )),
+                                                            tags$div(id = "sources_rect",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -183,7 +260,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                      tabPanel("GDP",
                                               
                                               girafeOutput("scatterplot_emissions_gdp", width = "90%"),
-
+                                              
                                               absolutePanel(
                                                 wellPanel(
                                                   uiOutput("scatterplot_emissions_gdp_year"),
@@ -203,6 +280,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_gdp_text",
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas."),
+                                                                        "Displayed are only emissions of carbon dioxide (no other greenhouse gases included).", tags$br(), 
+                                                                        "Emissions are attributed to the country / continent in which they physically occur."
+                                                              )),
+                                                            tags$div(id = "sources_gdp",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -212,10 +304,26 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                      tabPanel("Carbon budgets",
                                               
                                               girafeOutput("scatterplot_carbon_budgets", width = "90%"),
-                                            
+                                              
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_ipcc_text",
+                                                                        "'Years left' are calculated under the assumption of constant global carbon dioxide emissions. Budgets refer
+                                                                        to 1.1.2018.", tags$br(),
+                                                                        "Emission budget data from IPCC' Special Report on Global Warming of 1.5°C (2018), 
+                                                                        available at ", tags$a(href = "https://www.ipcc.ch/sr15", "https://www.ipcc.ch/sr15"), 
+                                                                        "(budgets are displayed in chapter 2, table 2.2)."
+                                                              )),
+                                                            tags$div(id = "sources_ipcc",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -225,22 +333,97 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                      tabPanel("Justice approaches",
                                               
                                               fluidRow(
-                                                column(8,
-                                              
-                                                  htmlOutput("approaches_table", style = "width:50vw;")
-                                                  
-                                                ),
-                                                
                                                 column(4,
                                                        
-                                                       girafeOutput("exemplary_years_left")
+                                                       absolutePanel(draggable = T,
+                                                                     wellPanel(
+                                                                       
+                                                                       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                                                                       
+
+                                                                       radioGroupButtons(
+                                                                         inputId = "selected_justice_approach",
+                                                                         label = "Future emission rights should be distributed based on...",
+                                                                         choices = c("the present emission distribution" = "grandfathering", 
+                                                                                     "equal shares for everybody" = "budget", 
+                                                                                     "both present emissions and equal shares" = "convergence"),
+                                                                         direction = "vertical",
+                                                                         justified = F,
+                                                                         selected = character(0),
+                                                                         checkIcon = list(
+                                                                           yes = icon("ok", 
+                                                                                      lib = "glyphicon"))
+                                                                       ),
+                                                                       
+                                                                       tags$label(class = "control-label", 'for' = "Id011",
+                                                                                  "Past emissions should be taken into account"
+                                                                       ),
+                                                                       
+                                                                       switchInput(
+                                                                         inputId = "selection_past_emissions",
+                                                                         size = "sm"
+                                                                       ),
+                                                                       style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;"
+                                                                       
+                                                                     ), top = "25%", left = "15%"
+                                                       )
                                                        
+                                                ),
+                                                
+                                                column(7,
+                                                       
+                                                       wellPanel(width = "90%", style = "z-index: 10; opacity: 0.65; padding-top:5px; padding-bottom:5px;",
+                                                                 
+                                                                 uiOutput("justice_approaches_heading"),
+                                                                 
+                                                                 fluidRow(
+                                                                   column(6,
+                                                                        uiOutput("justice_approaches_text")  
+                                                                   ),
+                                                                   column(6,
+                                                                          hidden(
+                                                                          girafeOutput("exemplary_years_left")
+                                                                          )
+                                                                   )
+                                                                   
+                                                                 )
+                                                       )
                                                 )
                                               ),
                                               
                                               absolutePanel(
                                                 actionButton("forwardPage3", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_justice_approaches_text",
+                                                                        "Countries displayed here were exemplarily chosen and represent industrialized (United States),
+                                                                        newly industrialized (Mexico) and developing (Botswana) countries.", tags$br(),
+                                                                        tags$b("Convergence & Contraction:"), "Approach developed by the ", tags$a(href = "http://www.gci.org.uk/",
+                                                                                                                                                   "Global Commons Institute"), 
+                                                                        ". Main assumption is that countries' per capita emissions converge in a (freely selecable) convergence year.", tags$br(),
+                                                                        tags$b("Budget Approach:"), "Developed by ", tags$a(href = "https://www.wbgu.de/fileadmin/user_upload/wbgu/publikationen/archiv/wbgu_factsheet_3.pdf",
+                                                                                                                            "WBGU"), 
+                                                                        ". The global emissions budget is allocated on a per capita basis for all states.", tags$br(),
+                                                                        tags$b("Grandfathering Approach:"), "The budget is allocated to states proportionally to their base year emissions.
+                                                                        This approach is more or less implicitly adopted in most climate negotiations.", tags$br(),
+                                                                        "Besides the approaches displayed here, several other approaches exist, e.g. the ", 
+                                                                        tags$a(href = "https://www.tandfonline.com/doi/abs/10.1080/14693062.2016.1176006", "Regensburg Model"), 
+                                                                        " (Sargl et al.) or the ", tags$a(href = "https://www.nature.com/articles/nclimate2384", "Extended Smooth Pathway Model"), "
+                                                                        (Raupach et al.). Approaches displayed here were exemplarily chosen", tags$br(),
+                                                                        "In contrast to the other approaches, \"Convergence and Contraction\" relies not only on an emission budget,
+                                                                        but also on assumptions about future global emission paths. For the sake of example and simplicity, 
+                                                                        a constant linear reduction of global emissions to zero is assumed, which is otherwise not realistic.", tags$br(),
+                                                                        "Data from the ",
+                                                                        tags$a(href = "http://www.globalcarbonatlas.org/en/content/welcome-carbon-atlas", "Global Carbon Atlas.")
+                                                              )),
+                                                            tags$div(id = "sources_justice_approaches",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                               
                                      ),
@@ -256,7 +439,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
                                                                       
-                                                                      sliderInput("base_year", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
+                                                                      sliderInput("base_year", "Select base year", min = 1960, max = 2018, value = 2018, step = 1, sep = ""),
                                                                       
                                                                       selectInput("selected_probability", "Select probability", choices = c("66%" = "66",
                                                                                                                                             "50%" = "50",
@@ -265,7 +448,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectInput("selected_warming_degrees", "Select warming degrees",
                                                                                   choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
-                                                                                  selected = "1.5°C"),
+                                                                                  selected = 1.5),
                                                                       
                                                                       selectInput("selected_calculation_approach", "Select a calculation approach",
                                                                                   choices = c("Budget approach" = "budget",
@@ -282,6 +465,20 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage5", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_years_left_text",
+                                                                        "Assumption: Country emissions remain constant at level of the selected base year. Note that selection of an 
+                                                                        earlier base year leads to cases where the budget is already depleted for some (mainly 
+                                                                        industrialized countries)."
+                                                              )),
+                                                            tags$div(id = "sources_years_left",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                      ),
                                      
@@ -292,26 +489,26 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(draggable = T,
                                                             
                                                             wellPanel(style = "width:300px;",
-                                                              
-                                                              selectizeInput("selected_countries_2", "Select countries", choices = NULL, multiple = TRUE),
-                                                              
-                                                              sliderInput("base_year_2", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
-                                                              
-                                                              selectInput("selected_probability_2", "Select probability", choices = c("66%" = "66",
-                                                                                                                                    "50%" = "50",
-                                                                                                                                    "33%" = "33"),
-                                                                          selected = "66%"),
-                                                              
-                                                              selectInput("selected_warming_degrees_2", "Select warming degrees",
-                                                                          choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
-                                                                          selected = "1.5°C"),
-                                                              
-                                                              selectInput("selected_calculation_approach_2", "Select a calculation approach",
-                                                                          choices = c("Budget approach" = "budget",
-                                                                                      "Contraction and Convergence" = "convergence",
-                                                                                      "Grandfathering" = "grandfathering"),
-                                                                          selected = "Budget approach")
-                                                              
+                                                                      
+                                                                      selectizeInput("selected_countries_2", "Select countries", choices = NULL, multiple = TRUE),
+                                                                      
+                                                                      sliderInput("base_year_2", "Select base year", min = 1960, max = 2018, value = NULL, step = 1, sep = ""),
+                                                                      
+                                                                      selectInput("selected_probability_2", "Select probability", choices = c("66%" = "66",
+                                                                                                                                              "50%" = "50",
+                                                                                                                                              "33%" = "33"),
+                                                                                  selected = "66%"),
+                                                                      
+                                                                      selectInput("selected_warming_degrees_2", "Select warming degrees",
+                                                                                  choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
+                                                                                  selected = NULL),
+                                                                      
+                                                                      selectInput("selected_calculation_approach_2", "Select a calculation approach",
+                                                                                  choices = c("Budget approach" = "budget",
+                                                                                              "Contraction and Convergence" = "convergence",
+                                                                                              "Grandfathering" = "grandfathering"),
+                                                                                  selected = "Budget approach")
+                                                                      
                                                             ), style = "z-index: 10; opacity: 0.65;", top = "25%", left = "4%", fixed = T
                                                             
                                               ),
@@ -321,6 +518,20 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(
                                                 actionButton("forwardPage5", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
+                                              ),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_budget_left_text",
+                                                                        "Assumption: Country emissions remain constant at level of the selected base year. Note that selection of an 
+                                                                        earlier base year leads to cases where the budget is already depleted for some (mainly 
+                                                                        industrialized countries)."
+                                                              )),
+                                                            tags$div(id = "sources_budget_left",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
                                               )
                                      ),
                                      
@@ -334,7 +545,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             
                                                             wellPanel(style = "width:300px;",
                                                                       
-                                                                      sliderInput("base_year_3", "Select base year", min = 1960, max = 2018, value = 1992, step = 1, sep = ""),
+                                                                      sliderInput("base_year_3", "Select base year", min = 1960, max = 2018, value = NULL, step = 1, sep = ""),
                                                                       
                                                                       selectInput("selected_probability_3", "Select probability", choices = c("66%" = "66",
                                                                                                                                               "50%" = "50",
@@ -343,7 +554,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectInput("selected_warming_degrees_3", "Select warming degrees",
                                                                                   choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
-                                                                                  selected = "1.5°C"),
+                                                                                  selected = NULL),
                                                                       
                                                                       selectInput("selected_calculation_approach_3", "Select a calculation approach",
                                                                                   choices = c("Budget approach" = "budget",
@@ -361,8 +572,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               )
                                      )
                                      
+                                     # Conclusio ####
+                                     
+                                     # tabPanel("Conclusio"
+                                     #        
+                                     #          
+                                     # ),
+                                     
                          )
-
+                         
                   )
                 )
 )

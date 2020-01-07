@@ -14,9 +14,10 @@ createHeatmapEmissionBudgetLeft <- function(data, scales, from, to, theme) {
     ggplot() +
     geom_tile_interactive(aes(x = country, y = year, fill = budget_left_perc, data_id = data_id,
                               tooltip = paste0(country, " (", year, "): ", round(budget_left_perc, 1), "% of budget left")), color = "white") +
-    scale_fill_gradientn(colours = c("slateblue4", "red", "orange", "white", "lightgreen", "chartreuse3", "darkgreen"),
-                         values = scales,
-                         na.value = "grey", name = "% budget left") +
+    # scale_fill_gradientn(colours = c("slateblue4", "red", "orange", "white", "lightgreen", "chartreuse3", "darkgreen"),
+    #                      values = scales,
+    #                      na.value = "grey", name = "% budget left") +
+    scales +
     coord_flip() +
     scale_y_continuous(breaks = seq(from, to, 1)) +
     theme +

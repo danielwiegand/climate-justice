@@ -4,7 +4,7 @@
 #' @import dplyr, ggplot2
 #' @export
 
-createBarChartLeadersLaggards <- function(data, theme) {
+createBarChartLeadersLaggards <- function(data, scales, theme) {
 
   output <- data %>%
     ggplot(aes(x = country, y = budget_left_perc, fill = budget_left_perc)) +
@@ -22,8 +22,7 @@ createBarChartLeadersLaggards <- function(data, theme) {
     ) +
     facet_grid(~ budget_left > 0, scales = "free", labeller = as_labeller(c("TRUE" = "Leaders", "FALSE" = "Laggards"))) +
     labs(title = "Leaders and laggards", subtitle = "Countries performing worst / best regarding their emission budget", x = "Country", y = "Budget left (%)") +
-    scale_fill_gradientn(colours = c("red", "white", "green"),
-                         values = scales::rescale(c(-2000, 0, 100)))
+    scales
 
   return(output)
 

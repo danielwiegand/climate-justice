@@ -4,6 +4,10 @@
 	height:70vh!important;
 }
 
+#exemplary_years_left .girafe_container_std svg {
+	max-height: 360px!important; /* Exception for the plot exemplary years left */
+}
+
 .btn-default {
 	background-image:none;
 }
@@ -82,7 +86,27 @@
 	top: 5px;
 }
 
+#approaches_table table tbody tr:hover ~ #test {
+	display:none;
+}
+
 /* Fix display of NA in leaflet legend */
 .info.legend.leaflet-control br {
 	clear:both;
+}
+
+#selected_justice_approach div div button {
+	text-align:left;
+}
+
+.sources {
+	text-align:right;
+	z-index:1000;
+}
+
+.sources_panel {
+	width:20vw;
+	opacity:0.85;
+	font-size:smaller;
+	text-align:justify;
 }
