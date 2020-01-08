@@ -1,29 +1,9 @@
 server <- function(input, output, session) {
   
+  # Die Texte machen
   # Gerechtigkeitsargu verfeinern und verkomplizieren (intergenerationell etc)
   # Die Rechtspfeile machen
-  # Die Texte machen
   # Contraction stimmt noch nicht ganz
-  # Quellen und Autor
-  # Jahar 2018 geht noch nicht
-  
-  # projection_data <- read.csv("src/climateactiontracker/EmissionsGaps_mod.csv", stringsAsFactors = F) %>%
-  #   mutate(data_id = as.character(row_number())) %>%
-  #   select(year, historical, data_id)
-  #   # gather(-year, key = "scenario", value = "value")
-  # 
-  # test <- projection_data %>%
-  #   ggplot() +
-  #   geom_line_interactive(aes(x = year, y = historical, data_id = data_id, tooltip = "asd")) #+
-  #   # geom_ribbon_interactive(aes(x = year, ymin = policy_projection_low, ymax = policy_projection_high, data_id = data_id)) +
-  #   # geom_line_interactive(aes(x = year, y = policy_projection_optimistic, data_id = data_id)) +
-  #   # geom_ribbon_interactive(aes(x = year, ymin = pledges_low, ymax = pledges_high, data_id = data_id)) +
-  #   # geom_ribbon_interactive(aes(x = year, ymin = d2_consistent_low, ymax = d2_consistent_high, data_id = data_id)) +
-  #   # geom_line_interactive(aes(x = year, y = d2_consistent_median, data_id = data_id)) +
-  #   # geom_ribbon_interactive(aes(x = year, ymin = d15_consistent_low, ymax = d15_consistent_high, data_id = data_id)) +
-  #   # geom_line_interactive(aes(x = year, y = d15_consistent_median, data_id = data_id))
-  # girafe(ggobj = test)
-  
   
   # GLIEDERUNG ####
   # THE QUESTION (): 
@@ -84,6 +64,8 @@ server <- function(input, output, session) {
   global_emissions <- countries_emissions %>%
     group_by(year) %>%
     summarize(emissions = sum(emissions, na.rm = T))
+  
+  projection_data <- read.csv("src/climateactiontracker/EmissionsGaps_mod.csv", stringsAsFactors = F)
   
   # INPUTS ####
   
@@ -303,7 +285,7 @@ server <- function(input, output, session) {
     # Scatterplot: Emissions per GDP ####
     
     output$scatterplot_emissions_gdp_year <- renderUI({
-      sliderInput("animate_emissions_gdp", label = "Year", min = 1971, max = 2018, step = 1, value = 1971, animate = T, sep = "")
+      sliderInput("animate_emissions_gdp", label = "", min = 1971, max = 2018, step = 1, value = 1971, animate = T, sep = "")
     })
     
     scatterplot_emissions_gdp_palette <- colorRampPalette(brewer.pal(9, "Paired"))
@@ -359,6 +341,7 @@ server <- function(input, output, session) {
     
     # Table: Approaches compared ####
     
+    # Heading of the main box
     output$justice_approaches_heading <- renderUI({
       req(input$selected_justice_approach)
       if(input$selected_justice_approach == "budget") {
@@ -370,9 +353,10 @@ server <- function(input, output, session) {
       }
     })
     
+    # Output: Text in the main box
     output$justice_approaches_text <- renderUI({
-      tags$div(id = "justice_approaches_content", style = "min-height:300px;",
-               hidden(tags$div(id = "budget_content",
+      tags$div(id = "justice_approaches_content", style = "min-height:500px;",
+               hidden(tags$div(id = "budget_content", # Gets visible by means of an observer when user selects this justice approach
                                tags$h4("Intuition", style = "font-variant:small-caps;"),
                                "Every human has an equal right to emissions, regardless of nationality",
                                tags$h4("How it works", style = "font-variant:small-caps; margin-top:30px;"),
@@ -402,6 +386,7 @@ server <- function(input, output, session) {
       )
     })
     
+    # Observers which trigger appearance of content based on user selection
     observe({
       req(input$selected_justice_approach)
       if(input$selected_justice_approach == "budget") {
@@ -425,6 +410,7 @@ server <- function(input, output, session) {
       }
     })
     
+    # When the user selects the inclusion of past emissions, set 1992 as base year
     observe({
       if(input$selection_past_emissions == T) {
         updateSliderInput(session, "base_year", value = 1992)
@@ -434,7 +420,8 @@ server <- function(input, output, session) {
     })
     
     
-    # Barchart: Approaches compared ####
+    # Bar chart: Approaches compared ####
+    # Small bar chart with exemplary changes to states' budgets
     
     selected_justice_approach_text <- reactive({
       if(input$selected_justice_approach == "budget") {
@@ -452,19 +439,12 @@ server <- function(input, output, session) {
         left_join(countries_emissions) %>%
         mutate(emissions = emissions / 1000000000) %>%
         mutate(budget_reach = base_year() + floor(total_country_budget_gt / emissions)) %>%
-        ggplot() +
-        geom_segment(aes(x = country, xend = country, y = maximum_year, yend = budget_reach), color = "grey") +
-        geom_point_interactive(aes(x = country, y = budget_reach, data_id = data_id,
-                                   tooltip = paste0(country, ": Budget reaches until year ", budget_reach), size = 10, color = country)) +
-        scale_color_manual(values = cols_countries_years_left(3)) +
-        coord_flip() +
-        geom_vline_interactive(aes(xintercept = maximum_year, tooltip = maximum_year, data_id = "a"), size = 2, color = "white") +
-        ggplot_transparent_theme +
-        theme(legend.position = "none",
-              aspect.ratio = .4,
-              axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
-        labs(x = "", y = "", caption = paste0("This graph shows how many years are left when the selected allocation approach is applied. 
-               Assumptions: Global budget is ", selected_carbon_budget_sr15(), "Gt CO2, state emissions stay constant."))
+        createBarChartExemplaryStates(
+          data = .,
+          theme = ggplot_transparent_theme,
+          cols = cols_countries_years_left,
+          selected_budget = selected_carbon_budget_sr15()
+        )
     })
     
     output$exemplary_years_left <- renderGirafe({
@@ -472,6 +452,33 @@ server <- function(input, output, session) {
     })
     
     
+    
+    # Chart: Future projections
+    
+    projection_data_2100 <- projection_data %>% filter(year == 2100) %>%
+      gather(-year, key = "key", value = "value") %>%
+      filter(!key %in% c("optimistic_policy", "d2_median", "d15_median", "historical")) %>%
+      mutate(split = str_detect(key, "high")) %>%
+      rowwise() %>%
+      mutate(cat = str_sub(key, 0, str_locate(key, "_")[1]-1)) %>%
+      ungroup() %>%
+      select(-key) %>%
+      group_by(split) %>%
+      spread(split, value) %>%
+      rename(ymin = "FALSE", ymax = "TRUE") %>%
+      mutate(xmin = year+1, xmax = year+3) %>%
+      mutate(cat = c("Baseline: 4.1 - 4.8°C", "Current policies: 2.8 - 3.2°C", "Pledges & Targets: 2.5 - 2.8°C", "2°C consistent: 1.7 - 1.7°C", "1.5°C consistent: 1.3°C"),
+             desc = paste0(round(ymin, 0), " to ", round(ymax, 0), " Gt yearly emissions"))
+    
+    ribbon_chart_projections <- createRibbonChartScenarios(
+      data_ribbon = projection_data,
+      data_column = projection_data_2100,
+      theme = ggplot_transparent_theme
+    )
+    
+    output$ribbon_chart_projections <- renderGirafe({
+      girafe(ggobj = ribbon_chart_projections, width_svg = 10, height_svg = 5)
+    })
     
   # CALCULATION OF JUST BUDGET ####
   
@@ -581,16 +588,12 @@ server <- function(input, output, session) {
         left_join(countries_emissions) %>%
         mutate(emissions = emissions / 1000000000) %>%
         mutate(budget_reach = base_year() + floor(total_country_budget_gt / emissions)) %>%
-        ggplot() +
-        geom_segment(aes(x = country, xend = country, y = base_year(), yend = budget_reach), color = "grey") +
-        geom_point_interactive(aes(x = country, y = budget_reach, data_id = data_id, 
-                                   tooltip = paste0(country, ": Budget lasts until year ", budget_reach), size = 10, color = country)) +
-        coord_flip() +
-        scale_color_manual(values = cols_countries_years_left(length(selected_countries()))) +
-        ggplot_transparent_theme +
-        theme(legend.position = "none",
-              axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
-        labs(title = "Budget reach", subtitle = "Under constant base year emissions", x = "Country", y = "Budget depletion year")
+        createBarChartYearsLeft(
+          data = .,
+          base_year = base_year(),
+          theme = ggplot_transparent_theme,
+          cols = cols_countries_years_left(length(selected_countries()))
+        )
     })
     
     output$years_left <- renderGirafe({
@@ -608,6 +611,7 @@ server <- function(input, output, session) {
     })
     
     heatmap_budget_left_allyears <- reactive({
+      req(just_emission_budgets_countries_left(), selected_countries())
       just_emission_budgets_countries_left() %>%
         filter(country %in% selected_countries()) %>%
         createHeatmapEmissionBudgetLeft(data = .,
@@ -620,26 +624,6 @@ server <- function(input, output, session) {
     output$heatmap_budget_left_allyears <- renderGirafe(
       girafe(ggobj = heatmap_budget_left_allyears(), width_svg = 10, height_svg = 4.5)
     )
-    
-    # test <- function(input, props) {
-    #   scales::rescale(c(
-    #     min(input, na.rm = T),
-    #     quantile(input, probs = props[1], na.rm = T),
-    #     quantile(input, probs = props[2], na.rm = T),
-    #     quantile(input, probs = props[3], na.rm = T),
-    #     quantile(input, probs = props[4], na.rm = T),
-    #     quantile(input, probs = props[5], na.rm = T),
-    #     max(input, na.rm = T)))
-    #   }
-    # 
-    # afd <- reactive({
-    #   req(just_emission_budgets_countries_left())
-    #   just_emission_budgets_countries_left() %>%
-    #     filter(country %in% selected_countries()) %>%
-    #     select(budget_left_perc) %>%
-    #     test()
-    # })
-    # observe(print(afd()))
     
     # Barchart: Budget left (percent), leaders & laggards (facets) ####
     
@@ -659,6 +643,7 @@ server <- function(input, output, session) {
         group_by(budget_left_perc < 0) %>%
         top_n(10, abs(budget_left_perc)) %>%
         ungroup() %>%
+        head(20) %>% # If all countries have the same value, this ensures that not all countries are plotted, only the first 20
         mutate(country = reorder(country, budget_left_perc)) %>%
         createBarChartLeadersLaggards(
           data = .,
@@ -686,8 +671,8 @@ server <- function(input, output, session) {
     onevent("click", "sources_justice_approaches", toggle("sources_justice_approaches_text"))
     onevent("click", "sources_years_left", toggle("sources_years_left_text"))
     onevent("click", "sources_budget_left", toggle("sources_budget_left_text"))
-    
-    
+    onevent("click", "sources_laggards", toggle("sources_laggards_text"))
+    onevent("click", "sources_scenarios", toggle("sources_scenarios_text"))
     
     
     # Sync all panels ####
@@ -815,8 +800,20 @@ server <- function(input, output, session) {
     })
     
     # Jump to next / previous page ####
-    observeEvent(input$forwardPage2,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Next page")
+    observeEvent(input$forwardToPage2,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Temperatures")
+    })
+    observeEvent(input$forwardToPage3,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Emissions")
+    })
+    observeEvent(input$forwardToPage4,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Consequences")
+    })
+    observeEvent(input$forwardToPage5,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Emitters")
+    })
+    observeEvent(input$forwardToPage6,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Per capita")
     })
     
     # Create choice values for gdp scatterplot country selection ####
@@ -891,3 +888,4 @@ server <- function(input, output, session) {
     
     
 }
+

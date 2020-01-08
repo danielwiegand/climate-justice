@@ -21,7 +21,7 @@ createBarChartLeadersLaggards <- function(data, scales, theme) {
       strip.text = element_text(colour = "white")
     ) +
     facet_grid(~ budget_left > 0, scales = "free", labeller = as_labeller(c("TRUE" = "Leaders", "FALSE" = "Laggards"))) +
-    labs(title = "Leaders and laggards", subtitle = "Countries performing worst / best regarding their emission budget", x = "Country", y = "Budget left (%)") +
+    labs(title = "Leaders and laggards", subtitle = "Countries performing worst / best regarding their emission budget", x = "", y = "Budget left (%)") +
     scales
 
   return(output)

@@ -19,14 +19,16 @@ createChartScales <- function(data) {
         max(input, na.rm = T)))
     } else {
       scales::rescale(c(
-        min(input, na.rm = T),
+        min(input, na.rm = T) * 0.999, # Very small factor for cases where all probs are same (then ggplot scale_fill_gradientn does not work)
         quantile(input, probs = props[1], na.rm = T),
         quantile(input, probs = props[2], na.rm = T),
         quantile(input, probs = props[3], na.rm = T),
         quantile(input, probs = props[4], na.rm = T),
         quantile(input, probs = props[5], na.rm = T),
-        max(input, na.rm = T)))
+        max(input, na.rm = T) * 1.111)) # Very small factor for cases where all probs are same (then ggplot scale_fill_gradientn does not work)
     }
+
+    # This still provoques the warning "Warning in regularize.values(x, y, ties, missing(ties)) collapsing to unique 'x' values", which is not critical however
 
   }
 
@@ -38,6 +40,7 @@ createChartScales <- function(data) {
 
   } else {
     scale_fill_gradientn(colours = c("tan1", "khaki", "lightgreen", "green3", "forestgreen", "darkgreen"),
+                         # values = c(100, 100, 100, 100, 100, 100, 100),
                          values = createScales(data, props = c(.1, .2, .4, .6, .9), neg = F),
                          na.value = "grey", name = "% budget left")
   }

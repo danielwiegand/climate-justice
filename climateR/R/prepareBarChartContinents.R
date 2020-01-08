@@ -24,7 +24,7 @@ prepareBarChartContinents <- function(data, theme) {
       legend.key = element_blank(), # Removes frame around boxes
       legend.key.size = unit(.3, "cm") # Box size
     ) +
-    labs(x = "Year", y = "Emissions (Gt)", title = "World emissions", subtitle = "Development of the world's CO2 emissions over time")
+    labs(x = "Year", y = "Emissions (Gt carbon dioxide)", title = "Global emissions", subtitle = "Development of the world's CO2 emissions over time")
   return(barchart)
 
 }

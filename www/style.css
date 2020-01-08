@@ -70,20 +70,22 @@
 	border-collapse:initial;
 }
 
+.slider-animate-container {
+	position: absolute;
+	bottom: 105px;
+	right: 40px;
+}
+
 .glyphicon-play {
 	font-size:25px;
-	margin-top:10px;
-	position: absolute;
-	right: 20px;
-	top: 5px;
 }
 
 .glyphicon-pause {
 	font-size:25px;
-	margin-top:10px;
-	position: absolute;
-	right: 20px;
-	top: 5px;
+}
+
+.irs-max {
+	display:none;
 }
 
 #approaches_table table tbody tr:hover ~ #test {
@@ -104,9 +106,17 @@
 	z-index:1000;
 }
 
+.sources div {	
+	cursor:pointer;
+}
+
 .sources_panel {
 	width:20vw;
 	opacity:0.85;
 	font-size:smaller;
 	text-align:justify;
+}
+
+ul {
+	list-style-type:circle;
 }
