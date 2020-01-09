@@ -15,10 +15,7 @@ library(broom) # tidy
 library(ggiraph)
 library(leaflet)
 library(RColorBrewer)
-library(slickR) # Slideshow
 library(shinyjs)
-library(knitr)
-library(kableExtra)
 library(ggrepel)
 library(shinyWidgets)
 
