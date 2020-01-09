@@ -4,16 +4,14 @@
 \alias{createChartScales}
 \title{Create Chart scales}
 \usage{
-createChartScales(data, props)
+createChartScales(data)
 }
 \arguments{
 \item{data}{Atomic numeric vector}
-
-\item{props}{Probabilities for quantiles}
 }
 \description{
 Create Chart scales
 }
 \details{
-Creates numbers used for a color scale in charts. Seven colors are used, center is zero.
+Creates numbers used for a color scale in charts. If the vector contains negative values, seven colors are used, center is zero. Otherwise, different colors and center is not zero.
 }

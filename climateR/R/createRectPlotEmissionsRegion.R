@@ -19,7 +19,7 @@ createRectPlotEmissionsRegion <- function(data, theme, cols, year, pos_label) {
     scale_x_continuous(breaks = seq(0, 8, 1), limits = c(0, 8)) +
     scale_y_continuous(limits = c(0, 18)) +
     labs(x = "Population (billions)", y = "Emissions per capita (t CO2e)",
-         title = paste0("Emissions per region and capita ", year), subtitle = "Relation between per capita emissions and population size")
+         title = paste0("Emissions per region and capita ", year), subtitle = "Relation between per capita emissions and population size of continents")
 
   return(output)
 

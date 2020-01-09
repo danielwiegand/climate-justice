@@ -1,53 +1,9 @@
 server <- function(input, output, session) {
   
-  # Die Texte machen
-  # Gerechtigkeitsargu verfeinern und verkomplizieren (intergenerationell etc)
-  # Die Rechtspfeile machen
   # Contraction stimmt noch nicht ganz
-  
-  # GLIEDERUNG ####
-  # THE QUESTION (): 
-  # - Kurze Hinführung zur Frage, was Climate Justice ist, und Problematik von "Gerechtigkeit" anreißen
-  # - Es geht auch um intergenerational justice (Brundtland)
-  # - Vllt haben Staaten auch Rechte auf Ressourcen und Entwicklung
-  # - A Perfect Moral Storm
-  # KONTEXT KLIMAWANDEL: TEMPERATUREN
-  # KONTEXT KLIMAWANDEL: FOLGEN (MEERESSPIEGEL?)
-  # WORLD EMISSIONS
-  # UNEQUAL CONTRIBUTIONS
-  # - Is this unfair? We cannot say!
-  # PER CAPITA
-  # - Länder antippbar machen für mehr Informationen?
-  # FOLIE: KORRELATIONEN. Wirtschatswachstum, Entwickllungsindex, Demokratieindex
-  # - https://ourworldindata.org/uploads/2018/10/CO2-emissions-by-income-and-region.png
-  # - Im  Allge-meinen  besteht  eine  enge  Korrelation  zwischen  Pro-Kopf-Emissionen  und  dem  Ein-kommen. 
-  # - In den einigenLändern hat das BIP den stärksten Einfluss auf die Treibhausgasemissio-nen verglichen mit anderen Faktoren wie der Bevölkerungszahl, dem Einkommenoder dem Energiemix. Diese starke Korrelation wird in verschiedenen Ländern wie den Ver-einigten  Staaten,  Indonesien,  Indien,  Australien  und  dem  Iran  deutlich.  Doch  es  gibt auch  Beispiele  für  Länder,deren  Veränderungen  im  Treibhausgasausstoß  sich  nicht  in erster  Linie  mit  dem  BIP  erklären  läßt.  Hierzu  zählen  Russland  und  die  Ukraine. Ihr Rückgang  in  den  Emissionen in  den  vergangenen  Jahren wurde  zwar  auch  durch die Stilllegung  vieler Betriebe forciert. Laut  Baumert  et  al.dominieren  jedochUmstruktu-rierungen, die zu einer  Verminderung der Energieintensität geführt haben. Noch  gerin-ger  ist  der  Zusammenhang  zwischen  den  Veränderungen  des  BIP  und  dem  Treibhaus-gasausstoßim  Fall  von  Ländern  wie  Argentinien,  die  vorrangig  landwirtschaftlich  ge-prägt sind(Baumert / Herzog / Pershing 2005: 26).
-  # FOLIE: Die Budget-Methodik erklären
-  # - These probabilities reflect the sizable uncertainty in the sensitivity of the climate to CO2 emissions. Coloured bars correspond to the carbon budget from different studies listed on the left, while values below zero mean that current cumulative emissions already exceeded the “well below” 1.5C carbon budget.
-  # - Grafik unter https://www.carbonbrief.org/analysis-how-much-carbon-budget-is-left-to-limit-global-warming-to-1-5c
-  # - Unsicherheiten: https://www.wri.org/blog/2018/10/according-new-ipcc-report-world-track-exceed-its-carbon-budget-12-years
-  # - Evtl. gibts da bei IPCC was, im letzten Bericht? Oder auf der Webseite?
   # - Klar machen, dass es um Budgets geht, nicht um Zielerreichung
-  # - Das Kohlenstoffbudget wird als endliches, weltweites Allmendegut angesehen**, dass es international aufzuteilen gilt.
-  # FEHLENDE FOLIE: Berechnungsarten und wie sie sich auswirken
-  # - per capita: Einfache Form von G
-  # - Regensburger Formel?
-  # - per capabilities: In GDP gemessen
-  # - Problematik: Scope 3. D produziert zB für viele andere Länder, England hat deindustrialisiert (Grafiken Industriequote?) Evtl. gezielter Ländervergleich hier
-  # BUDGET LEFT
-  # - Ermuntern zum Rumspielen
-  # BUDGET: VORAUSSCHAUEND
-  # LEADERS AND LAGGARDS
   # EVTL WAS MIT FINANCIAL COMPENSATION? Ein Topf, und es wird dargestellt, wer wieviel einzahlt und wieviel rausbekommt?
-  # EVTL WAS, DAS ZIELERREICHUNG ANZEIGT? (OUTLOOK, PFADE, SZENARIEN...)
-  # - evtl ourworld in data, Future emissions
-  # - Kann man vllt verschiedene Pfade anzeigen für 1.5°C, 2°C etc? Siehe zB IPCC Summary S. 14
-  # FOLIE: WAS FOLGT DARAUS?
-  # - etwas, das Hoffnung macht, Beispiele
-  # - Ermunterung zum Handeln
-  # - Material, um Druck zu machen
-  
-  
+
   # READ DATA ####
   
   carbon_budgets <- importIPCCData()
@@ -339,7 +295,7 @@ server <- function(input, output, session) {
       girafe(ggobj = scatterplot_carbon_budgets(), width_svg = 10, height_svg = 5)
     })
     
-    # Table: Approaches compared ####
+    # Justice Approaches compared ####
     
     # Heading of the main box
     output$justice_approaches_heading <- renderUI({
@@ -350,28 +306,30 @@ server <- function(input, output, session) {
         tags$div(tags$h3("Convergence and Contraction"), style = "text-align:center;")
       } else if(input$selected_justice_approach == "grandfathering") {
         tags$div(tags$h3("Grandfathering Approach"), style = "text-align:center;")
+      } else if(input$selected_justice_approach == "other") {
+        tags$div(tags$h3("Other approaches"), style = "text-align:center;")
       }
     })
     
     # Output: Text in the main box
     output$justice_approaches_text <- renderUI({
-      tags$div(id = "justice_approaches_content", style = "min-height:500px;",
+      tags$div(id = "justice_approaches_content",
                hidden(tags$div(id = "budget_content", # Gets visible by means of an observer when user selects this justice approach
                                tags$h4("Intuition", style = "font-variant:small-caps;"),
-                               "Every human has an equal right to emissions, regardless of nationality",
+                               "Every human has an equal right to emissions, regardless of nationality.",
                                tags$h4("How it works", style = "font-variant:small-caps; margin-top:30px;"),
-                               "The remaining budget per country is allocated based on equal per capita emissions.",
+                               "The remaining budget is allocated based on equal per capita emissions.",
                                tags$h4("Consequences", style = "font-variant:small-caps; margin-top:30px;"),
-                               "Industrialized states currently exceed their budget and accumulate large 'carbon debts',
+                               "Industrialized states currently exceed their budget and accumulate large 'carbon debts'
                                                                                             due to their high per capita emissions. Developing states are allocated large emission
                                                                                             budgets. If historic emissions are taken into account, budgets of industrialized countries
-                                                                                            often are already exceeded."
+                                                                                            often are already exceeded by now."
                )),
                hidden(tags$div(id = "convergence_content",
                                tags$h4("Intuition", style = "font-variant:small-caps;"),
                                "Every human has an equal right to emissions, but we should implement it gradually.",
                                tags$h4("How it works", style = "font-variant:small-caps; margin-top:30px;"),
-                               "Initially, the remaining global budget is distributed based on paste emissions ('grandfathering'). Over the years, this is gradually replaced by a distribution based on equal per capita emissions.",
+                               "Initially, the remaining global budget is distributed based on the existing distribuion ('grandfathering'). Over the years, this is gradually replaced by a distribution based on equal per capita emissions.",
                                tags$h4("Consequences", style = "font-variant:small-caps; margin-top:30px;"),
                                "Industrialized countries have to reduce their emissions, but not as drastically as with the Budget Approach. Developing countries can moderately increase their emissions."
                )),
@@ -382,41 +340,85 @@ server <- function(input, output, session) {
                                "Each country's share on the global emissions is held constant.",
                                tags$h4("Consequences", style = "font-variant:small-caps; margin-top:30px;"),
                                "Economic development of developing countries could be hindered, as they have to hold their (low) share on global emissions constant. Developed countries are in a comfortable situation."
+               )),
+               hidden(tags$div(id = "other_content", # Gets visible by means of an observer when user selects this justice approach
+                               tags$br(), "We might think of other approaches to allocate the carbon budget:",
+                               tags$br(), tags$br(), 
+                               tags$ul(tags$li(
+                                 "We could distribute emission rights based on the ", tags$u("capabilities"), " of states to reduce emissions, and use a metric such as GDP to approximate this capability"
+                               ),
+                               tags$li(
+                                 "We could have a closer look at the ", tags$u("individual situation"), " states are in: Are they located in geographical latitude where their energy consumption is
+                                 necessarily higher? Did they just face a civil war and need more resources to recover?"
+                                 ),
+                               tags$li(
+                                 "Instead of looking at where emissions accrue, we could look at ", tags$u("on whose behalf"), " they accrue - a large portion of China's emissions, for example,
+                                 accrues for products which are sold in Europe or the US! In this so called ", tags$a(href = "https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions#consumption-based-trade-adjusted-co2-emissions",
+                                 "\"consumption-based view\""), ", even more emissions would be attributed to industrialized countries."
+                               
+                               )
+                               ), tags$br(), tags$br()
                ))
       )
     })
     
     # Observers which trigger appearance of content based on user selection
-    observe({
+    observeEvent(input$selected_justice_approach, {
       req(input$selected_justice_approach)
       if(input$selected_justice_approach == "budget") {
         shinyjs::hide("convergence_content")
         shinyjs::hide("grandfathering_content")
+        shinyjs::hide("other_content")
         shinyjs::show("budget_content")
         shinyjs::show("exemplary_years_left")
         updateSelectInput(session, "selected_calculation_approach", selected = "budget")
       } else if(input$selected_justice_approach == "convergence") {
         shinyjs::hide("budget_content")
         shinyjs::hide("grandfathering_content")
+        shinyjs::hide("other_content")
         shinyjs::show("convergence_content")
         shinyjs::show("exemplary_years_left")
         updateSelectInput(session, "selected_calculation_approach", selected = "convergence")
       } else if(input$selected_justice_approach == "grandfathering") {
         shinyjs::hide("convergence_content")
         shinyjs::hide("budget_content")
+        shinyjs::hide("other_content")
         shinyjs::show("grandfathering_content")
         shinyjs::show("exemplary_years_left")
         updateSelectInput(session, "selected_calculation_approach", selected = "grandfathering")
+      } else if(input$selected_justice_approach == "other") {
+        shinyjs::hide("convergence_content")
+        shinyjs::hide("budget_content")
+        shinyjs::hide("grandfathering_content")
+        shinyjs::hide("exemplary_years_left")
+        shinyjs::show("other_content")
+        # If "other" is selected, choose the Budget Approach as calculation method and set base year to 1990 (so that the next page "Years left" starts with this combination)
+        updateSelectInput(session, "selected_calculation_approach", selected = "budget")
+        updateSliderInput(session, "base_year", value = 1990)
+      }
+    })
+    observe(print(
+      input$selected_justice_approach
+    ))
+    # When the user selects the inclusion of past emissions, set 1990 as base year
+    observe({
+      if(input$selection_past_emissions == T) {
+        updateSliderInput(session, "base_year", value = 1990)
+        shinyjs::hide("text_historical_emissions_no")
+        shinyjs::show("text_historical_emissions_yes")
+      } else {
+        updateSliderInput(session, "base_year", value = maximum_year)
+        shinyjs::hide("text_historical_emissions_yes")
+        shinyjs::show("text_historical_emissions_no")
       }
     })
     
-    # When the user selects the inclusion of past emissions, set 1992 as base year
-    observe({
-      if(input$selection_past_emissions == T) {
-        updateSliderInput(session, "base_year", value = 1992)
-      } else {
-        updateSliderInput(session, "base_year", value = maximum_year)
-      }
+    # Create texts below the slider for historical emissions
+    output$text_historical_emissions_yes <- renderUI({
+      paste0("Allocation starts in ", base_year(), " ", ifelse(base_year() == 1990, "(this is the year where climate change became a problem widely known)", ""))
+    })
+    output$text_historical_emissions_no <- renderUI({
+      paste0("Allocation starts in ", base_year())
     })
     
     
@@ -467,7 +469,7 @@ server <- function(input, output, session) {
       spread(split, value) %>%
       rename(ymin = "FALSE", ymax = "TRUE") %>%
       mutate(xmin = year+1, xmax = year+3) %>%
-      mutate(cat = c("Baseline: 4.1 - 4.8°C", "Current policies: 2.8 - 3.2°C", "Pledges & Targets: 2.5 - 2.8°C", "2°C consistent: 1.7 - 1.7°C", "1.5°C consistent: 1.3°C"),
+      mutate(cat = c("Baseline: 4.1 - 4.8°C", "Current policies: 2.8 - 3.2°C", "1.5°C consistent: 1.3°C", "2°C consistent: 1.7 - 1.7°C", "Pledges & Targets: 2.5 - 2.8°C"),
              desc = paste0(round(ymin, 0), " to ", round(ymax, 0), " Gt yearly emissions"))
     
     ribbon_chart_projections <- createRibbonChartScenarios(
@@ -545,7 +547,7 @@ server <- function(input, output, session) {
         
       } else if(input$selected_calculation_approach == "convergence") {
         # Very simple approach: Countries' population share is assumed to be constant between base and target year.
-        # Linear version of Convergenve & Contraction: Linear transition from allocation according to base year emissions to alloc. acc. to population share
+        # Linear version of Convergence & Contraction: Linear transition from allocation according to base year emissions to alloc. acc. to population share
         countries_emissions %>%
           left_join(population_percentages_allyears) %>%
           filter(year == base_year()) %>%
@@ -815,6 +817,30 @@ server <- function(input, output, session) {
     observeEvent(input$forwardToPage6,{
       updateTabsetPanel(session, inputId = "tabset-panel", selected = "Per capita")
     })
+    observeEvent(input$forwardToPage7,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "History")
+    })
+    observeEvent(input$forwardToPage8,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Affluence")
+    })
+    observeEvent(input$forwardToPage9,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Carbon budgets")
+    })
+    observeEvent(input$forwardToPage10,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Climate Justice")
+    })
+    observeEvent(input$forwardToPage11,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Years left")
+    })
+    observeEvent(input$forwardToPage12,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Budget left")
+    })
+    observeEvent(input$forwardToPage13,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Leaders")
+    })
+    observeEvent(input$forwardToPage14,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Conclusion")
+    })
     
     # Create choice values for gdp scatterplot country selection ####
     
@@ -832,7 +858,7 @@ server <- function(input, output, session) {
     observe({
       updateSelectizeInput(session, "selected_countries",
                            choices = country_list,
-                           selected = c("Australia", "Brazil", "Burundi", "Canada", "China", "Chile", "Ethiopia", "France",
+                           selected = c("Australia", "Brazil", "Canada", "China", "Chile", "Ethiopia", "France",
                                         "Germany", "India", "Japan", "Qatar", "Russia", "Spain", "United Kingdom", "United States", "United Arab Emirates"),
                            server = T
       )
@@ -841,7 +867,7 @@ server <- function(input, output, session) {
     observe({
       updateSelectizeInput(session, "selected_countries_2",
                            choices = country_list,
-                           selected = c("Australia", "Brazil", "Burundi", "Canada", "China", "Chile", "Ethiopia", "France",
+                           selected = c("Australia", "Brazil", "Canada", "China", "Chile", "Ethiopia", "France",
                                         "Germany", "India", "Japan", "Qatar", "Russia", "Spain", "United Kingdom", "United States", "United Arab Emirates"),
                            server = T
       )
@@ -850,7 +876,7 @@ server <- function(input, output, session) {
     observe({
       updateSelectizeInput(session, "selected_countries_3",
                            choices = country_list,
-                           selected = c("Australia", "Brazil", "Burundi", "Canada", "China", "Chile", "Ethiopia", "France",
+                           selected = c("Australia", "Brazil", "Canada", "China", "Chile", "Ethiopia", "France",
                                         "Germany", "India", "Japan", "Qatar", "Russia", "Spain", "United Kingdom", "United States", "United Arab Emirates"),
                            server = T
       )

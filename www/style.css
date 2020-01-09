@@ -117,6 +117,30 @@
 	text-align:justify;
 }
 
-ul {
+/*ul {
 	list-style-type:circle;
+}*/
+
+#other_content ul {
+	margin: 0;
+	padding: 0 0 0 20px;
+	list-style: none;
 }
+
+#other_content ul li {
+	position: relative;
+	line-height: 20px;
+	margin-bottom:10px;
+}
+
+#other_content ul li:before {
+	position: absolute;
+	background-color: #FFF;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	content: "";
+	left: -12px;
+ 	top: 8px;
+}
+
