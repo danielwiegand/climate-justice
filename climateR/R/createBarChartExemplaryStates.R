@@ -5,16 +5,16 @@
 #' @import dplyr, ggplot2
 #' @export
 
-createBarChartExemplaryStates <- function(data, theme, cols, selected_budget) {
+createBarChartExemplaryStates <- function(data, theme, cols, selected_budget, max_year) {
 
   output <- data %>%
     ggplot() +
-    geom_segment(aes(x = country, xend = country, y = maximum_year, yend = budget_reach), color = "grey") +
+    geom_segment(aes(x = country, xend = country, y = max_year, yend = budget_reach), color = "grey") +
     geom_point_interactive(aes(x = country, y = budget_reach, data_id = data_id,
                                tooltip = paste0(country, ": Budget lasts until year ", budget_reach), size = 10, color = country)) +
     scale_color_manual(values = cols(3)) +
     coord_flip() +
-    geom_vline_interactive(aes(xintercept = maximum_year, tooltip = maximum_year, data_id = "a"), size = 2, color = "white") +
+    geom_vline_interactive(aes(xintercept = max_year, tooltip = max_year, data_id = "a"), size = 2, color = "white") +
     theme +
     theme(legend.position = "none",
           aspect.ratio = .4,

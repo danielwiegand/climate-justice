@@ -58,6 +58,8 @@ server <- function(input, output, session) {
   maximum_year <- max(countries_emissions$year)
   minimum_year <- min(countries_emissions$year)
   
+  observe(print(maximum_year))
+  
   total_country_emis_since_base_year <- reactive({
     countries_emissions %>%
       filter(year >= base_year()) %>%
@@ -397,9 +399,7 @@ server <- function(input, output, session) {
         updateSliderInput(session, "base_year", value = 1990)
       }
     })
-    observe(print(
-      input$selected_justice_approach
-    ))
+
     # When the user selects the inclusion of past emissions, set 1990 as base year
     observe({
       if(input$selection_past_emissions == T) {
@@ -445,7 +445,8 @@ server <- function(input, output, session) {
           data = .,
           theme = ggplot_transparent_theme,
           cols = cols_countries_years_left,
-          selected_budget = selected_carbon_budget_sr15()
+          selected_budget = selected_carbon_budget_sr15(),
+          max_year = maximum_year
         )
     })
     
