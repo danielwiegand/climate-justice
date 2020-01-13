@@ -1,9 +1,5 @@
 server <- function(input, output, session) {
   
-  # Contraction stimmt noch nicht ganz
-  # - Klar machen, dass es um Budgets geht, nicht um Zielerreichung
-  # EVTL WAS MIT FINANCIAL COMPENSATION? Ein Topf, und es wird dargestellt, wer wieviel einzahlt und wieviel rausbekommt?
-
   # READ DATA ####
   
   carbon_budgets <- importIPCCData()
@@ -149,9 +145,9 @@ server <- function(input, output, session) {
     
     # Iframe: Sea level rise ####
     
-    output$iframe_sea_level <- renderUI({
-      tags$iframe(src = "https://seeing.climatecentral.org/#12/40.7298/-74.0070?show=lockinAnimated&level=0&unit=feet&pois=hide", style = "height:70vh; width:70vw;")
-    })
+    # output$iframe_sea_level <- renderUI({
+    #   tags$iframe(src = "https://seeing.climatecentral.org/#12/40.7298/-74.0070?show=lockinAnimated&level=0&unit=feet&pois=hide", style = "height:70vh; width:70vw;")
+    # })
     
     # Bar chart: Emissions per continent + year ####
     
@@ -888,6 +884,7 @@ server <- function(input, output, session) {
     
     value_startpage <- reactiveVal(0)
     
+    # Create endless chain of numbers 1 to 3
     observe({
       invalidateLater(10000, session)
       if(isolate(value_startpage() < 3)) {
@@ -897,6 +894,7 @@ server <- function(input, output, session) {
       }
     })
     
+    # Depending on value, change the picture displayed
     observe({
       if(value_startpage() == 1) {
         shinyjs::show("startpage_image_1")
@@ -917,6 +915,7 @@ server <- function(input, output, session) {
     
     value_consequences <- reactiveVal(0)
     
+    # Create endless chain of numbers 1 to 5
     observe({
       invalidateLater(7000, session)
       if(isolate(value_consequences() < 5)) {
