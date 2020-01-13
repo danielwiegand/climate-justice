@@ -208,6 +208,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                      tags$u("Additional information / sources")
                                                             ),
                                                             bottom = "1%", right = "2%"
+                                              ),
+                                              
+                                              absolutePanel(
+                                                actionButton("forwardToPage6", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                top = "35%", right = "10%", fixed = T
                                               )
                                               
                                      ),
@@ -226,7 +231,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage6", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage7", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -265,7 +270,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage7", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage8", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -306,7 +311,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage8", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage9", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -359,7 +364,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage9", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage10", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -398,7 +403,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage10", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage11", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -496,7 +501,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage11", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage12", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -576,7 +581,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage12", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage13", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -637,7 +642,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage13", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage14", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               
@@ -697,7 +702,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               ),
                                               
                                               absolutePanel(
-                                                actionButton("forwardToPage14", "", icon = icon("chevron-right"), class = "scroll-button"),
+                                                actionButton("forwardToPage15", "", icon = icon("chevron-right"), class = "scroll-button"),
                                                 top = "35%", right = "10%", fixed = T
                                               ),
                                               

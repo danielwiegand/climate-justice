@@ -811,33 +811,36 @@ server <- function(input, output, session) {
       updateTabsetPanel(session, inputId = "tabset-panel", selected = "Consequences")
     })
     observeEvent(input$forwardToPage5,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Emitters")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Scenarios")
     })
     observeEvent(input$forwardToPage6,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Per capita")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Emitters")
     })
     observeEvent(input$forwardToPage7,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "History")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Per capita")
     })
     observeEvent(input$forwardToPage8,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Affluence")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "History")
     })
     observeEvent(input$forwardToPage9,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Carbon budgets")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Affluence")
     })
     observeEvent(input$forwardToPage10,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Climate Justice")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Carbon budgets")
     })
     observeEvent(input$forwardToPage11,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Years left")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Climate Justice")
     })
     observeEvent(input$forwardToPage12,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Budget left")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Years left")
     })
     observeEvent(input$forwardToPage13,{
-      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Leaders")
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Budget left")
     })
     observeEvent(input$forwardToPage14,{
+      updateTabsetPanel(session, inputId = "tabset-panel", selected = "Leaders")
+    })
+    observeEvent(input$forwardToPage15,{
       updateTabsetPanel(session, inputId = "tabset-panel", selected = "Conclusion")
     })
     
