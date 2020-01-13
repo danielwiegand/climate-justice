@@ -58,8 +58,6 @@ server <- function(input, output, session) {
   maximum_year <- max(countries_emissions$year)
   minimum_year <- min(countries_emissions$year)
   
-  observe(print(maximum_year))
-  
   total_country_emis_since_base_year <- reactive({
     countries_emissions %>%
       filter(year >= base_year()) %>%
@@ -446,7 +444,7 @@ server <- function(input, output, session) {
           theme = ggplot_transparent_theme,
           cols = cols_countries_years_left,
           selected_budget = selected_carbon_budget_sr15(),
-          max_year = maximum_year
+          start_year = maximum_year
         )
     })
     
@@ -885,23 +883,23 @@ server <- function(input, output, session) {
     
     # Images on start page ####
     
-    value <- reactiveVal(0)
+    value_startpage <- reactiveVal(0)
     
     observe({
       invalidateLater(10000, session)
-      if(isolate(value() < 3)) {
-        isolate(value(value() + 1))
+      if(isolate(value_startpage() < 3)) {
+        isolate(value_startpage(value_startpage() + 1))
       } else {
-        isolate(value(1))
+        isolate(value_startpage(1))
       }
     })
     
     observe({
-      if(value() == 1) {
+      if(value_startpage() == 1) {
         shinyjs::show("startpage_image_1")
         shinyjs::hide("startpage_image_2")
         shinyjs::hide("startpage_image_3")
-      } else if(value() == 2) {
+      } else if(value_startpage() == 2) {
         shinyjs::hide("startpage_image_1")
         shinyjs::show("startpage_image_2")
         shinyjs::hide("startpage_image_3")
@@ -912,6 +910,52 @@ server <- function(input, output, session) {
       }
     })
     
+    # Images on consequences page ####
+    
+    value_consequences <- reactiveVal(0)
+    
+    observe({
+      invalidateLater(7000, session)
+      if(isolate(value_consequences() < 5)) {
+        isolate(value_consequences(value_consequences() + 1))
+      } else {
+        isolate(value_consequences(1))
+      }
+    })
+    
+    observe({
+      if(value_consequences() == 1) {
+        shinyjs::show("consequences_1")
+        shinyjs::hide("consequences_2")
+        shinyjs::hide("consequences_3")
+        shinyjs::hide("consequences_4")
+        shinyjs::hide("consequences_5")
+      } else if(value_consequences() == 2) {
+        shinyjs::hide("consequences_1")
+        shinyjs::show("consequences_2")
+        shinyjs::hide("consequences_3")
+        shinyjs::hide("consequences_4")
+        shinyjs::hide("consequences_5")
+      } else if(value_consequences() == 3) {
+        shinyjs::hide("consequences_1")
+        shinyjs::hide("consequences_2")
+        shinyjs::show("consequences_3")
+        shinyjs::hide("consequences_4")
+        shinyjs::hide("consequences_5")
+      } else if(value_consequences() == 4) {
+        shinyjs::hide("consequences_1")
+        shinyjs::hide("consequences_2")
+        shinyjs::hide("consequences_3")
+        shinyjs::show("consequences_4")
+        shinyjs::hide("consequences_5")
+      } else {
+        shinyjs::hide("consequences_1")
+        shinyjs::hide("consequences_2")
+        shinyjs::hide("consequences_3")
+        shinyjs::hide("consequences_4")
+        shinyjs::show("consequences_5")
+      }
+    })
     
     
 }

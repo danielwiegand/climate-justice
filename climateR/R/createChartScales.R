@@ -33,7 +33,7 @@ createChartScales <- function(data) {
   }
 
 
-  if(sum(data < 0) > 0) {
+  if(sum(data < 0, na.rm = T) > 0) {
     scale_fill_gradientn(colours = c("slateblue4", "red", "orange", "white", "lightgreen", "chartreuse3", "darkgreen"),
                          values = createScales(data, props = c(.4, .9, .1, .2), neg = T),
                          na.value = "grey", name = "% budget left")

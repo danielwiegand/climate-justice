@@ -150,12 +150,30 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             
                                                             wellPanel(tags$b("The consequences of climate change for our living conditions are not always but mostly negative."), tags$br(), tags$br(), 
                                                                       "Besides an increased occurrence of ", tags$a(href = "https://www.c2es.org/content/extreme-weather-and-climate-change/",
-                                                                                                                    "extreme weather events"), " such as heat waves or hurricanes, rising sea levels pose a threat to coastal cities.", tags$br(), tags$br(),
-                                                                      "Find out how much global temperature rise affects a city such as New York!"),
+                                                                                                                    "extreme weather events"), " such as heat waves or hurricanes, rising sea levels pose a threat to coastal cities."),
                                                             style = "z-index: 10; opacity: 0.85;", top = "32%", left = "13%", fixed = T, width = "20%", align = "justify"
                                               ),
                                               
-                                              htmlOutput("iframe_sea_level", width = "90%"),
+                                              img(id = "consequences_1", src = "consequences_1.jpg", style = "height: 75vh;"),
+                                              hidden(img(id = "consequences_2", src = "consequences_2.jpg", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_3", src = "consequences_3.jpg", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_4", src = "consequences_4.jpg", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_5", src = "consequences_5.jpg", style = "height: 75vh")),
+                                              
+                                              absolutePanel(class = "sources",
+                                                            hidden(
+                                                              wellPanel(class = "sources_panel", id = "sources_scenarios_text",
+                                                                        "Images by ", tags$a(href = "https://pixabay.com/users/wikiimages-1897/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=63005",
+                                                                                             "WikiImages"), ", ", 
+                                                                        tags$a(href = "https://www.pexels.com/de-de/@george-desipris?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels", "George Desipris"), ", ",
+                                                                        tags$a(href = "https://unsplash.com/@nikolasnoonan?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText", "Nikolas Noonan")
+                                                              )),
+                                                            tags$div(id = "sources_scenarios",
+                                                                     icon("info-circle"),
+                                                                     tags$u("Additional information / sources")
+                                                            ),
+                                                            bottom = "1%", right = "2%"
+                                              ),
                                               
                                               absolutePanel(
                                                 actionButton("forwardToPage5", "", icon = icon("chevron-right"), class = "scroll-button"),

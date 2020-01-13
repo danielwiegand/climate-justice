@@ -71,9 +71,9 @@
 }
 
 .slider-animate-container {
-	position: absolute;
-	bottom: 105px;
-	right: 40px;
+	position: relative;
+	bottom: 70px;
+	right: 20px;
 }
 
 .glyphicon-play {
@@ -82,6 +82,10 @@
 
 .glyphicon-pause {
 	font-size:25px;
+}
+
+#justice_approaches_content {
+	text-align:justify;
 }
 
 .irs-max {

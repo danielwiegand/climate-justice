@@ -1,20 +1,21 @@
-#' Bar chart: Budget changes depending on justice approach for exemplary states
+#' Bar chart: Budget reach depending on justice approach for exemplary states
 #' @param data Data frame containing the data
 #' @param theme Some ggplot theme adjustments
 #' @param cols The color values for scale_color_manual
+#' @param start_year The year from which budget reach is measured
 #' @import dplyr, ggplot2
 #' @export
 
-createBarChartExemplaryStates <- function(data, theme, cols, selected_budget, max_year) {
+createBarChartExemplaryStates <- function(data, theme, cols, selected_budget, start_year) {
 
   output <- data %>%
     ggplot() +
-    geom_segment(aes(x = country, xend = country, y = max_year, yend = budget_reach), color = "grey") +
+    geom_segment(aes(x = country, xend = country, y = start_year, yend = budget_reach), color = "grey") +
     geom_point_interactive(aes(x = country, y = budget_reach, data_id = data_id,
                                tooltip = paste0(country, ": Budget lasts until year ", budget_reach), size = 10, color = country)) +
     scale_color_manual(values = cols(3)) +
     coord_flip() +
-    geom_vline_interactive(aes(xintercept = max_year, tooltip = max_year, data_id = "a"), size = 2, color = "white") +
+    geom_vline_interactive(aes(xintercept = start_year, tooltip = start_year, data_id = "a"), size = 2, color = "white") +
     theme +
     theme(legend.position = "none",
           aspect.ratio = .4,
