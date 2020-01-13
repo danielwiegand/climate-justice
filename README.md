@@ -1,6 +1,6 @@
 # What is Climate Justice?
 
-This is a website which explains the basic concept of Climate Justice, i.e. a just allocation of greenhousse gas emission rights under proviso of limiting global climate change.
+This is the code for a website which explains the basic concept of "Climate Justice": a just allocation of greenhousse gas emission rights under proviso of limiting global climate change.
 
 The page is available under https://what-is-climate-justice.org
 
