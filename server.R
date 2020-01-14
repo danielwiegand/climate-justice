@@ -259,7 +259,8 @@ server <- function(input, output, session) {
                               limits_x = scatterplot_emissions_gdp_xaxis_limits,
                               limits_y = scatterplot_emissions_gdp_yaxis_limits,
                               limits_scale = scatterplot_emissions_gdp_scale_size_limits,
-                              colors = scatterplot_emissions_gdp_colors)
+                              colors = scatterplot_emissions_gdp_colors,
+                              year = input$animate_emissions_gdp)
     })
     
     output$scatterplot_emissions_gdp <- renderGirafe({
@@ -440,7 +441,8 @@ server <- function(input, output, session) {
           theme = ggplot_transparent_theme,
           cols = cols_countries_years_left,
           selected_budget = selected_carbon_budget_sr15(),
-          start_year = maximum_year
+          start_year = maximum_year,
+          temperature_target = input$selected_warming_degrees
         )
     })
     
@@ -659,6 +661,8 @@ server <- function(input, output, session) {
     # Trigger "Sources" ####
     
     onevent("click", "sources_temperature", toggle("sources_temperature_text"))
+    onevent("click", "sources_consequences", toggle("sources_consequences_text"))
+    onevent("click", "sources_scenarios", toggle("sources_scenarios_text"))
     onevent("click", "sources_emissions_timeseries", toggle("sources_emissions_timeseries_text"))
     onevent("click", "sources_continent_emissions", toggle("sources_continent_emissions_text"))
     onevent("click", "sources_chloropleth", toggle("sources_chloropleth_text"))
@@ -669,8 +673,6 @@ server <- function(input, output, session) {
     onevent("click", "sources_years_left", toggle("sources_years_left_text"))
     onevent("click", "sources_budget_left", toggle("sources_budget_left_text"))
     onevent("click", "sources_laggards", toggle("sources_laggards_text"))
-    onevent("click", "sources_scenarios", toggle("sources_scenarios_text"))
-    
     
     # Sync all panels ####
     # In Shiny, you only can display an inputId once, but we need to have the same inputs (basie data for budget calculation) on several tabs

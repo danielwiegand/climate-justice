@@ -162,13 +162,13 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               
                                               absolutePanel(class = "sources",
                                                             hidden(
-                                                              wellPanel(class = "sources_panel", id = "sources_scenarios_text",
+                                                              wellPanel(class = "sources_panel", id = "sources_consequences_text",
                                                                         "Images by ", tags$a(href = "https://pixabay.com/users/wikiimages-1897/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=63005",
                                                                                              "WikiImages"), ", ", 
                                                                         tags$a(href = "https://www.pexels.com/de-de/@george-desipris?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels", "George Desipris"), ", ",
                                                                         tags$a(href = "https://unsplash.com/@nikolasnoonan?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText", "Nikolas Noonan")
                                                               )),
-                                                            tags$div(id = "sources_scenarios",
+                                                            tags$div(id = "sources_consequences",
                                                                      icon("info-circle"),
                                                                      tags$u("Additional information / sources")
                                                             ),
