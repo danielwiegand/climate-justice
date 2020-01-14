@@ -1,6 +1,6 @@
 # What is Climate Justice?
 
-This is the code for a website which explains the basic concept of "Climate Justice": a just allocation of greenhousse gas emission rights under proviso of limiting global climate change.
+This is the code for a website which explains the basic concept of "Climate Justice": a just allocation of greenhouse gas emission rights under proviso of limiting global climate change.
 
 The page is available under https://what-is-climate-justice.org
 
@@ -10,7 +10,7 @@ Several data sources are used, mainly the Global Carbon Project (https://www.glo
 
 ## Technical implementation
 
-The code is written in R and makes use on the "Shiny" package for interactivity (shiny.rstudio.com/). A dedicated R package ("climateR", located in the app folder) contains some important functions. The page is hosted on Amazon Web Services (AWS). 
+The code is written in R and makes use on the "Shiny" package for interactivity (http://shiny.rstudio.com/). A dedicated R package ("climateR", located in the app folder) contains some important functions. The page is hosted on Amazon Web Services (AWS). 
 
 ## Questions & Suggestions
 
