@@ -1,10 +1,11 @@
 #' Scatter plot: Emissions and GDP per capita
 #' @details Prepares the scatter plot
 #' @param data Data frame containing the emission data
+#' @param year The year for which data are to be plotted
 #' @import dplyr, ggplot2
 #' @export
 
-prepareScatterPlotGDP <- function(data, theme, limits_x, limits_y, limits_scale, colors) {
+prepareScatterPlotGDP <- function(data, theme, limits_x, limits_y, limits_scale, colors, year) {
 
   output <- data %>%
     ggplot() +
@@ -19,7 +20,7 @@ prepareScatterPlotGDP <- function(data, theme, limits_x, limits_y, limits_scale,
     theme +
     theme(legend.position = "none") +
     labs(x = "GDP per capita (PPP-$)", y = "Emissions per capita (t CO2e)",
-         title = "Emissions and GDP per capita", subtitle = "Relation between economic development and emissions")
+         title = paste0("Emissions and GDP per capita: ", year), subtitle = "Relation between economic development and emissions")
 
   return(output)
 
