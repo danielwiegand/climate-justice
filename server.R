@@ -21,8 +21,14 @@ server <- function(input, output, session) {
   
   # INPUTS ####
   
+  # Allocation date: Date when allocation starts (beginning of a year)
+  allocation_date <- reactive({
+    input$alloc_date
+  })
+  
+  # Base year: Year before allocation starts
   base_year <- reactive({
-    input$base_year
+    allocation_date() - 1
   })
   
   selected_probability <- reactive({
@@ -47,41 +53,50 @@ server <- function(input, output, session) {
   
   # IMPORTANT VARIABLES ####
   
-  # Year where the IPCC budgets used were published
-  year_ipcc_budgets <- 2018 # For the IPCC SR1.5 report
+  # Date where the IPCC budgets used were published (Beginning of year)
+  ipcc_budget_date <- 2018 # For the IPCC SR1.5 report
   
   # Minimum and maximum years of available emissions data
   maximum_year <- max(countries_emissions$year)
   minimum_year <- min(countries_emissions$year)
   
-  total_country_emis_since_base_year <- reactive({
+  # Total country emissions since allocation date
+  total_country_emis_since_allocation_date <- reactive({
     countries_emissions %>%
-      filter(year >= base_year()) %>%
+      filter(year >= allocation_date()) %>%
       group_by(country) %>%
-      mutate(emissions = ifelse(year == base_year(), 0, emissions)) %>% # Base year is not part of the period the remaining budget applies to
       summarize(total_emis_since_by_gt = sum(emissions)/1000000000) %>%
       ungroup()
   })
   
-  cumulated_country_emis_since_base_year <- reactive({
+  # Cumulated country emissions since allocation date
+  cumulated_country_emis_since_allocation_date <- reactive({
     countries_emissions %>%
-      filter(year >= base_year()) %>%
+      filter(year >= allocation_date()) %>%
       group_by(country) %>%
-      mutate(emissions = ifelse(year == base_year(), 0, emissions)) %>% # Base year is not part of the period the remaining budget applies to
-      mutate(cumulated_emis_since_by_gt = cumsum(emissions)/1000000000) %>%
+      mutate(cumulated_emis_since_ad_gt = cumsum(emissions)/1000000000) %>%
       ungroup() %>%
-      select(country, year, cumulated_emis_since_by_gt)
+      select(country, year, cumulated_emis_since_ad_gt)
   })
   
   
-  # Total global emissions between base year and year of IPCC budget publication
-  total_global_emis_since_base_year <- reactive({
+  # Total global emissions between allocation date and latest year with data available
+  total_global_emis_since_allocation_date <- reactive({
     global_emissions %>%
-      filter(year > base_year() & year <= year_ipcc_budgets) %>% # Base year is not part of the period the remaining budget applies to
+      filter(year >= allocation_date() & year <= maximum_year) %>%
       summarize(total_global_emis = sum(emissions)) %>%
       as.numeric()
   })
   
+  # Total global emissions between allocation date and reference date of IPCC budgets
+  total_global_emis_between_allocdate_ipccbudgetdate <- reactive({
+    global_emissions %>%
+    filter(year >= allocation_date() & year < ipcc_budget_date) %>% # Emissions of years before IPCC budgets apply
+      summarize(total_global_emis = sum(emissions)) %>%
+      as.numeric()
+  })
+  
+  # Global emissions in base year
   global_emissions_base_year <- reactive({
     global_emissions %>%
       filter(year == base_year()) %>%
@@ -98,15 +113,16 @@ server <- function(input, output, session) {
   })
   
   
-  # All IPCC carbon budgets related to the base year (incl. additional emissions between base year and year of IPCC budget publication)
-  carbon_budgets_at_base_year <- reactive({
+  # All IPCC carbon budgets related to the allocation date (incl. additional emissions between allocation date and reference date of IPCC budgets)
+  carbon_budgets_at_allocation_date <- reactive({
     carbon_budgets %>%
-      mutate(budget_gt = budget_gt + total_global_emis_since_base_year() / 1000000000)
+      mutate(budget_gt = budget_gt + total_global_emis_between_allocdate_ipccbudgetdate() / 1000000000)
   })
   
-  
-  selected_carbon_budget_at_base_year <- reactive({
-    carbon_budgets_at_base_year() %>%
+  selected_carbon_budget_at_allocation_date <- reactive({
+    # Budget refers to all emissions between allocation date and the year when emissions reach zero (calculated_zero_emissions_year())
+    # Base year emissions do not count to this budget
+    carbon_budgets_at_allocation_date() %>%
       filter(probability == selected_probability(),
              warming_degrees == selected_warming_degrees()) %>%
       select(budget_gt) %>%
@@ -491,14 +507,20 @@ server <- function(input, output, session) {
     # Assumption: Global pathway is a linear path to zero
     
     calculated_zero_emissions_year <- reactive({
-      base_year() + 2 * selected_carbon_budget_at_base_year() / (global_emissions_base_year() / 1000000000)
+      # The calculated zero emissions year is always an integer; in reality, it is very probable that emissions go to zero in between the year.
+      # Due to this, the cumulated emissions of the global future linear pathway do not exactly meet the IPCC budget
+      ceiling(
+        # ceiling() rounds up to the next integer
+        base_year() + 2 * selected_carbon_budget_at_allocation_date() / (global_emissions_base_year() / 1000000000)
+      )
     })
     
     calculated_reduction_per_year <- reactive({
-      (global_emissions_base_year() / 1000000000) ^ 2 / (2 * selected_carbon_budget_at_base_year())
+      (global_emissions_base_year() / 1000000000) / (calculated_zero_emissions_year() - base_year())
     })
     
     global_future_pathway_linear <- reactive({
+      # Forecasted pathway from base year until the year when emissions reach zero
       data.frame(
         year = base_year() : calculated_zero_emissions_year(),
         cumulated_reductions_absolute = calculated_reduction_per_year(),
@@ -508,7 +530,8 @@ server <- function(input, output, session) {
         mutate(
           cumulated_reductions_absolute = cumsum(cumulated_reductions_absolute),
           global_emissions = global_emissions - cumulated_reductions_absolute,
-          Ct = (year - base_year()) / (calculated_zero_emissions_year() - base_year())
+          # Ct is zero for base year; base year emissions are however not part of the global carbon budget
+          Ct = (year - base_year()) / (calculated_zero_emissions_year() - base_year()) 
         ) %>%
         select(-cumulated_reductions_absolute) %>%
         mutate(global_emissions = global_emissions * 1000000000)
@@ -516,30 +539,20 @@ server <- function(input, output, session) {
     
     # Per country: Assigned emission budgets (only for base year) ####
     
-    # observe(print(
-    #   # c(
-    #   # just_emission_budgets_countries() %>%
-    #   #   summarize(summe = sum(total_country_budget_gt, na.rm = T)),
-    #   # selected_carbon_budget_at_base_year()
-    #   # )
-    #   head(global_future_pathway_linear() %>% arrange(-year))
-    #   # global_emissions_base_year()
-    # ))
-    
     just_emission_budgets_countries <- reactive({
       
       if(input$selected_calculation_approach == "budget") {
         countries_emissions %>%
           left_join(population_percentages_allyears) %>%
           filter(year == base_year()) %>%
-          mutate(total_country_budget_gt = population_percentage * selected_carbon_budget_at_base_year()) %>%
+          mutate(total_country_budget_gt = population_percentage * selected_carbon_budget_at_allocation_date()) %>%
           select(country, year, total_country_budget_gt, data_id)
         
       } else if(input$selected_calculation_approach == "grandfathering") {
         countries_emissions %>%
           filter(year == base_year()) %>%
           mutate(emission_share = emissions / global_emissions_base_year()) %>% 
-          mutate(total_country_budget_gt = emission_share * selected_carbon_budget_at_base_year()) %>%
+          mutate(total_country_budget_gt = emission_share * selected_carbon_budget_at_allocation_date()) %>%
           select(country, year, total_country_budget_gt, data_id)
         
       } else if(input$selected_calculation_approach == "convergence") {
@@ -547,6 +560,7 @@ server <- function(input, output, session) {
         # Linear version of Convergence & Contraction: Linear transition from allocation according to base year emissions to alloc. acc. to population share
         countries_emissions %>%
           left_join(population_percentages_allyears) %>%
+          # Take base year emissions as starting point, which are then linearly reduced from the next year on
           filter(year == base_year()) %>%
           select(country, emissions, population_percentage, data_id) %>%
           rename(emission_forecast = emissions) %>%
@@ -556,7 +570,7 @@ server <- function(input, output, session) {
           mutate(emission_forecast = calculateContractionConvergence(emission_forecast, Ct, global_emissions, population_percentage)) %>%
           mutate(total_country_budget_gt = sum(emission_forecast[-1]) / 1000000000) %>% # Base year emissions (row 1) do not count to the remaining budget
           ungroup() %>%
-          filter(year == base_year()) %>%
+          filter(year == base_year()) %>% # Choose one random year, just to remove duplicates
           select(country, year, total_country_budget_gt, data_id)
       }
     })
@@ -567,8 +581,8 @@ server <- function(input, output, session) {
       countries_emissions %>%
         filter(year >= base_year()) %>%
         left_join(just_emission_budgets_countries() %>% select(-year, -data_id)) %>% # Join with total budget per country for the base year
-        left_join(cumulated_country_emis_since_base_year()) %>%
-        mutate(budget_left = total_country_budget_gt - cumulated_emis_since_by_gt,
+        left_join(cumulated_country_emis_since_allocation_date()) %>%
+        mutate(budget_left = total_country_budget_gt - cumulated_emis_since_ad_gt,
                budget_left_perc = budget_left / total_country_budget_gt * 100) %>%
         select(country, year, total_country_budget_gt, budget_left, budget_left_perc, data_id)
     })
@@ -580,10 +594,10 @@ server <- function(input, output, session) {
     cols_countries_years_left <- colorRampPalette(colors = brewer.pal(9, "Paired"))
     
     barchart_countries_years_left <- reactive({
-      req(selected_countries(), just_emission_budgets_countries(), total_country_emis_since_base_year())
+      req(selected_countries(), just_emission_budgets_countries(), total_country_emis_since_allocation_date())
       just_emission_budgets_countries() %>%
         filter(country %in% c(selected_countries())) %>%
-        left_join(total_country_emis_since_base_year()) %>%
+        left_join(total_country_emis_since_allocation_date()) %>%
         left_join(countries_emissions) %>%
         mutate(emissions = emissions / 1000000000) %>%
         mutate(budget_reach = base_year() + floor(total_country_budget_gt / emissions)) %>%
@@ -693,27 +707,27 @@ server <- function(input, output, session) {
     # Base year
     observe({
       updateSliderInput(
-        session, inputId = "base_year", value = c(input$base_year_2)
+        session, inputId = "alloc_date", value = c(input$alloc_date_2)
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "base_year", value = c(input$base_year_3)
+        session, inputId = "alloc_date", value = c(input$alloc_date_3)
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "base_year_2", value = c(input$base_year)
+        session, inputId = "alloc_date_2", value = c(input$alloc_date)
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "base_year_3", value = c(input$base_year_2)
+        session, inputId = "alloc_date_3", value = c(input$alloc_date_2)
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "base_year__3", value = c(input$base_year)
+        session, inputId = "alloc_date__3", value = c(input$alloc_date)
       )
     })
     
