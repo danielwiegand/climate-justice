@@ -35,6 +35,14 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 
                 titlePanel("What is Climate Justice?"),
                 
+                # Notification for mobile phone users
+                wellPanel(id = "notification", 
+                          tags$b("NOTE:"),
+                          "This page is not optimized for mobile phones and should be displayed on a computer or tablet.",
+                          tags$br(),
+                          actionButton("hide_notification_message", "OK", style = "float:right;")
+                ),
+                
                 fluidRow(
                   column(1),
                   column(10,
@@ -54,9 +62,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             wellPanel(tags$b("Climate change is threatening the basis for sustained human life on earth.", style = "font-size:20px;"), tags$br(), tags$br(), "While often perceived as a matter
                                                                       of natural science (climate science) or politics (climate summits), its ethical aspects, especially in relation
                                                                       with considerations of justice, are often overlooked.", tags$br(), tags$br(),
-                                                                      "Even though the demand for \"Climate Justice\" is emphatically expressed by movements such as \"Fridays for Future\",
-                                                                      this notion seems to be used in quite a broad sense, and little seems to be known about what Climate Justice
-                                                                      would mean in practice.", tags$br(), tags$br(), "This is the starting point for this introduction to Climate Justice."),
+                                                                      "This is the starting point for this ", tags$b("introduction to Climate Justice"), " - click through the following pages to learn more about this concept!"),
                                                             style = "z-index: 100; opacity: 0.85; font-size:16px;", top = "25%", right = "16%", fixed = T, width = "22%", align = "justify"
                                                             
                                               ),
@@ -262,8 +268,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             
                                                             wellPanel(tags$b("We have to look at the per capita emissions to judge the situation."), tags$br(), tags$br(),
                                                                       "We can see that, while Asia's (mainly China's) emissions are on the rise, its per capita emissions are still lower than those of 
-                                                                      countries such as Saudi Arabia or the United States of America. Thus, an average Asian still emits much 
-                                                            less than an average European.", tags$br(), tags$br(),
+                                                                      countries such as Saudi Arabia or the United States of America.", tags$br(), tags$br(),
                                                                       tags$b("We may have reasons to question the justice of this situation"), " - why should somebody (prima facie) have more rights 
                                                             to emit than somebody else?"),
                                                             style = "z-index: 10; opacity: 0.75;", top = "50%", right = "13%", fixed = T, width = "20%", align = "justify"
@@ -300,10 +305,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               absolutePanel(draggable = T,
                                                             
                                                             wellPanel(
-                                                              tags$b("The situation gets more complicated when we look at past emissions"), ": Industrialized countries showed
-                                                            high per capita emissions for many decades, while emissions of Asian or African countries mainly rose due to population
-                                                            growth - at least until the 21st century.", tags$br(), tags$br(),
-                                                              tags$b("Should we take historical emissions into account when judging the justice of the present situation?"), tags$br(), tags$br(),
+                                                              tags$b("The situation gets more complicated when we look at past emissions"), 
+                                                              ": Should we take historical emissions into account when judging the justice of the present situation?", tags$br(), tags$br(),
                                                               "(Press \"Play\" to see how the situation evolved.)", tags$br(), tags$br(),
                                                               sliderInput("year_emissions_per_region", label = "", min = 1960, max = 2018, step = 1, value = 1960, animate = T, sep = "")
                                                             ),
@@ -346,8 +349,6 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                 wellPanel(
                                                   "There seems to be a relation between a country's per capita emissions and its affluence (as measured in 
                                                   terms of Gross Domestic Product).", tags$br(), tags$br(),
-                                                  "Even if correlation does not imply causality, and even if this relation between emissions and affluence might change in future,
-                                                  restricting a country's emissions might (directly or indirectly) also restrict its chances to prosper in future.", tags$br(), tags$br(),
                                                   tags$b("This makes clear that allocating emission budgets means also allocating affluence and chances."), tags$br(), tags$br(),
                                                   uiOutput("scatterplot_emissions_gdp_year"),
                                                   style = "z-index: 10; opacity: 0.75;", align = "justify"
@@ -437,7 +438,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               fluidRow(
                                                 column(4,
                                                        
-                                                       absolutePanel(draggable = T,
+                                                       # absolutePanel(draggable = T,
                                                                      wellPanel(
                                                                        "Time to make some choices:", tags$br(), tags$br(),
                                                                        tags$b("1. Based on what should future emissions be distributed?"),
@@ -474,7 +475,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                                 style = "z-index: 10; opacity: 0.75; padding:19px; align:justify;"
                                                                        )
                                                                        
-                                                                     ), top = "25%", left = "15%", style = "line-height:1.6;"
+                                                                     # ), top = "25%", left = "15%", style = "line-height:1.6;"
                                                        )
                                                        
                                                 ),

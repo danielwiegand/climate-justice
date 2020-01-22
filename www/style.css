@@ -1,3 +1,23 @@
+/* Message for mobile phone users */
+
+#notification {
+	display:none;
+	position: fixed;
+	z-index: 101;
+	width: 90vw;
+	opacity:.9;
+	font-size: 14px;
+	text-align: justify;
+	overflow: auto;
+}
+
+@media only screen and (max-device-width : 500px) {
+	#notification {
+		display:block;
+	}
+}
+
+
 .girafe_container_std svg {
 	max-height: none!important; /* Needed to make girafe outputs fill the screen */
 	max-width: none!important;

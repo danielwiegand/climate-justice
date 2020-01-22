@@ -975,6 +975,12 @@ server <- function(input, output, session) {
       }
     })
     
+    # Mobile phone users popup ####
+    
+    observeEvent(input$hide_notification_message, {
+      shinyjs::hide("notification")  
+    })
+    
     
 }
 
