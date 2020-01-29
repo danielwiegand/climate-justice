@@ -550,7 +550,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectizeInput("selected_countries", "Select countries", choices = NULL, multiple = TRUE),
                                                                       
-                                                                      sliderInput("alloc_date", "Start allocation in", min = 1960, max = 2018, value = 2018, step = 1, sep = ""),
+                                                                      sliderInput("alloc_date", "Start allocation in", min = 1961, max = 2018, value = 2018, step = 1, sep = ""),
                                                                       
                                                                       selectInput("selected_warming_degrees", "Select warming target",
                                                                                   choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
@@ -611,7 +611,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                                       
                                                                       selectizeInput("selected_countries_2", "Select countries", choices = NULL, multiple = TRUE),
                                                                       
-                                                                      sliderInput("alloc_date_2", "Start allocation at beginning of", min = 1960, max = 2018, value = NULL, step = 1, sep = ""),
+                                                                      sliderInput("alloc_date_2", "Start allocation in", min = 1961, max = 2018, value = NULL, step = 1, sep = ""),
                                                                       
                                                                       selectInput("selected_warming_degrees_2", "Select warming target",
                                                                                   choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
@@ -672,7 +672,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             
                                                             wellPanel(style = "width:300px;",
                                                                       
-                                                                      sliderInput("alloc_date_3", "Start allocation in", min = 1960, max = 2018, value = NULL, step = 1, sep = ""),
+                                                                      sliderInput("alloc_date_3", "Start allocation in", min = 1961, max = 2018, value = NULL, step = 1, sep = ""),
                                                                       
                                                                       selectInput("selected_warming_degrees_3", "Select warming target",
                                                                                   choices = c("1.27°C" = 1.27, "1.5°C" = 1.5, "1.75°C" = 1.75, "2°C" = 2),
