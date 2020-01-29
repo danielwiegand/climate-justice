@@ -21,15 +21,12 @@ server <- function(input, output, session) {
   
   # INPUTS ####
   
-  # Allocation date: Date when allocation starts (beginning of a year)
-  allocation_date <- reactive({
-    input$alloc_date
-  })
-  
   # Base year: Year before allocation starts
   base_year <- reactive({
+    # On page "Years left"
     allocation_date() - 1
   })
+  
   
   selected_probability <- reactive({
     input$selected_probability
@@ -43,9 +40,38 @@ server <- function(input, output, session) {
     input$selected_calculation_approach
   })
   
+  # Selected countries (these inputs are synchronized by means of observers)
+  
   selected_countries <- reactive({
+    # On page "Years left"  
     input$selected_countries
-  })
+  }) %>%
+    # Debounce skips intermediary values and therefore avoids "bouncing"
+    debounce(1000)
+  
+  selected_countries_2 <- reactive({
+    # On page "Budget left"  
+    input$selected_countries_2
+  }) %>%
+    debounce(1000)
+  
+  # Selected allocation date: Date when allocation starts (beginning of a year)
+  # (these inputs are synchronized by means of observers)
+  
+  allocation_date <- reactive({
+    input$alloc_date
+  }) %>%
+    debounce(1000)
+  
+  allocation_date_2 <- reactive({
+    input$alloc_date_2
+  }) %>%
+    debounce(1000)
+  
+  allocation_date_3 <- reactive({
+    input$alloc_date_3
+  }) %>%
+    debounce(1000)
   
   # OPTIONS ####
   
@@ -414,11 +440,11 @@ server <- function(input, output, session) {
     # When the user selects the inclusion of past emissions, set 1990 as base year
     observe({
       if(input$selection_past_emissions == T) {
-        updateSliderInput(session, "base_year", value = 1990)
+        updateSliderInput(session, "alloc_date", value = 1990)
         shinyjs::hide("text_historical_emissions_no")
         shinyjs::show("text_historical_emissions_yes")
       } else {
-        updateSliderInput(session, "base_year", value = maximum_year)
+        updateSliderInput(session, "alloc_date", value = maximum_year)
         shinyjs::hide("text_historical_emissions_yes")
         shinyjs::show("text_historical_emissions_no")
       }
@@ -426,10 +452,10 @@ server <- function(input, output, session) {
     
     # Create texts below the slider for historical emissions
     output$text_historical_emissions_yes <- renderUI({
-      paste0("Allocation starts in ", base_year(), " ", ifelse(base_year() == 1990, "(this is the year where climate change became a problem widely known)", ""))
+      paste0("Allocation starts in ", allocation_date(), " ", ifelse(allocation_date() == 1990, "(this is the year where climate change became a problem widely known)", ""))
     })
     output$text_historical_emissions_no <- renderUI({
-      paste0("Allocation starts in ", base_year())
+      paste0("Allocation starts in ", allocation_date())
     })
     
     
@@ -695,39 +721,39 @@ server <- function(input, output, session) {
     # Selected countries
     observe({
       updateSelectizeInput(
-        session, inputId = "selected_countries", selected = c(input$selected_countries_2)
+        session, inputId = "selected_countries", selected = c(selected_countries_2())
       )
     })
     observe({
       updateSelectizeInput(
-        session, inputId = "selected_countries_2", selected = c(input$selected_countries)
+        session, inputId = "selected_countries_2", selected = c(selected_countries())
       )
     })
     
     # Base year
     observe({
       updateSliderInput(
-        session, inputId = "alloc_date", value = c(input$alloc_date_2)
+        session, inputId = "alloc_date", value = c(allocation_date_2())
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "alloc_date", value = c(input$alloc_date_3)
+        session, inputId = "alloc_date", value = c(allocation_date_3())
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "alloc_date_2", value = c(input$alloc_date)
+        session, inputId = "alloc_date_2", value = c(allocation_date())
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "alloc_date_3", value = c(input$alloc_date_2)
+        session, inputId = "alloc_date_3", value = c(allocation_date_2())
       )
     })
     observe({
       updateSliderInput(
-        session, inputId = "alloc_date__3", value = c(input$alloc_date)
+        session, inputId = "alloc_date_3", value = c(allocation_date())
       )
     })
     
