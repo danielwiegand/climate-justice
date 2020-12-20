@@ -53,9 +53,9 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                      
                                      tabPanel("Introduction",
                                               
-                                              img(id = "startpage_image_1", src = "climate-justice1.jpg", style = "height: 75vh;"),
-                                              hidden(img(id = "startpage_image_2", src = "climate-justice2.jpg", style = "height: 75vh")),
-                                              hidden(img(id = "startpage_image_3", src = "climate-justice3.jpg", style = "height: 75vh")),
+                                              img(id = "startpage_image_1", src = "climate-justice1.webp", style = "height: 75vh;"),
+                                              hidden(img(id = "startpage_image_2", src = "climate-justice2.webp", style = "height: 75vh")),
+                                              hidden(img(id = "startpage_image_3", src = "climate-justice3.webp", style = "height: 75vh")),
                                               
                                               absolutePanel(draggable = T,
                                                             
@@ -160,11 +160,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                                             style = "z-index: 10; opacity: 0.85;", top = "32%", left = "13%", fixed = T, width = "20%", align = "justify"
                                               ),
                                               
-                                              img(id = "consequences_1", src = "consequences_1.jpg", style = "height: 75vh;"),
-                                              hidden(img(id = "consequences_2", src = "consequences_2.jpg", style = "height: 75vh")),
-                                              hidden(img(id = "consequences_3", src = "consequences_3.jpg", style = "height: 75vh")),
-                                              hidden(img(id = "consequences_4", src = "consequences_4.jpg", style = "height: 75vh")),
-                                              hidden(img(id = "consequences_5", src = "consequences_5.jpg", style = "height: 75vh")),
+                                              img(id = "consequences_1", src = "consequences_1.webp", style = "height: 75vh;"),
+                                              hidden(img(id = "consequences_2", src = "consequences_2.webp", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_3", src = "consequences_3.webp", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_4", src = "consequences_4.webp", style = "height: 75vh")),
+                                              hidden(img(id = "consequences_5", src = "consequences_5.webp", style = "height: 75vh")),
                                               
                                               absolutePanel(class = "sources",
                                                             hidden(
@@ -729,7 +729,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                               fluidRow(
                                                 column(10,
                                                        
-                                                       img(src = "climate-justice1.jpg", style = "height: 75vh;"),
+                                                       img(src = "climate-justice1.webp", style = "height: 75vh;"),
                                                        
                                                        
                                                        absolutePanel(draggable = T,
