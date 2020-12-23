@@ -1,4 +1,5 @@
 *.jpg
+/archive
 .Rproj.user
 .Rhistory
 .RData
