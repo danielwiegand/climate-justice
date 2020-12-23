@@ -1,5 +1,8 @@
 *.jpg
 /archive
+/doc
+/info
+**/edgar
 .Rproj.user
 .Rhistory
 .RData
