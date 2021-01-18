@@ -18,4 +18,4 @@ For questions / suggestions, feel free to contact me under climate-justice [at] 
 
 ## Screencast
 
-![climate justice webapp](https://github.com/danielwiegand/espm/blob/master/www/screencast.gif?raw=true)
+![climate justice webapp](https://github.com/danielwiegand/climate-justice/blob/master/www/screencast.gif?raw=true)
