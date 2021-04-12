@@ -15,3 +15,7 @@ The code is written in R and makes use on the "Shiny" package for interactivity 
 ## Questions & Suggestions
 
 For questions / suggestions, feel free to contact me under climate-justice [at] posteo.de
+
+## Screencast
+
+![climate justice webapp](https://github.com/danielwiegand/climate-justice/blob/master/www/screencast.gif?raw=true)
