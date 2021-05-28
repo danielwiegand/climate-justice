@@ -31,7 +31,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 
                 tags$head(
                   tags$link(rel="stylesheet", type="text/css", href="style.css"),
-                  tags$script(type = "text/javascript", src = "matomo.js")
+                  tags$script(type = "text/javascript", src = "matomo/matomo.js")
                 ),
                 
                 titlePanel("What is Climate Justice?"),
