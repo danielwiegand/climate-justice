@@ -3,7 +3,7 @@ var _paq = window._paq = window._paq || [];
 _paq.push(['trackPageView']);
 _paq.push(['enableLinkTracking']);
 (function() {
-  var u="//3.121.100.92:8080/";
+  var u="//35.159.26.100:8080/";
   _paq.push(['setTrackerUrl', u+'matomo.php']);
   _paq.push(['setSiteId', '2']);
   var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
